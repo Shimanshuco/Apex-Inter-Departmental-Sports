@@ -8,15 +8,10 @@ import MatchCard from "../components/scores/MatchCard";
 import RecentResults from "../components/scores/RecentResults";
 import { API_ENDPOINTS } from "../config/api";
 
-interface Team {
-  _id: string;
-  name: string;
-}
-
 interface Match {
   _id: string;
-  teamA: Team;
-  teamB: Team;
+  teamA: string;
+  teamB: string;
   sport: string;
   venue: string;
   scoreA: number;

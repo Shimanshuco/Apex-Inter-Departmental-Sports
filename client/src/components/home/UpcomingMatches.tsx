@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import Card from "../../components/ui/Card";
 import CardSection from "../../components/ui/CardSection";
-import Button from "../ui/Button";
 import { API_ENDPOINTS } from "../../config/api";
 import { useNotification } from "../../context/NotificationContext";
 
@@ -23,10 +22,14 @@ interface ReminderData {
   notified: boolean;
 }
 
+interface RemindersState {
+  [key: string]: ReminderData;
+}
+
 export default function UpcomingMatches() {
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
-  const [reminders, setReminders] = useState<Map<string, ReminderData>>(new Map());
+  const [reminders, setReminders] = useState<RemindersState>({});
   const { showNotification } = useNotification();
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -34,8 +37,12 @@ export default function UpcomingMatches() {
   useEffect(() => {
     const savedReminders = localStorage.getItem("matchRemindersData");
     if (savedReminders) {
-      const parsed = JSON.parse(savedReminders);
-      setReminders(new Map(Object.entries(parsed)));
+      try {
+        const parsed = JSON.parse(savedReminders);
+        setReminders(parsed);
+      } catch (e) {
+        console.error("Failed to parse reminders:", e);
+      }
     }
   }, []);
 
@@ -44,8 +51,9 @@ export default function UpcomingMatches() {
     const checkReminders = () => {
       const now = Date.now();
       let updated = false;
+      const newReminders = { ...reminders };
       
-      reminders.forEach((reminder, matchId) => {
+      Object.entries(newReminders).forEach(([matchId, reminder]) => {
         if (reminder.notified) return;
         
         const timeUntilMatch = reminder.matchTime - now;
@@ -64,21 +72,20 @@ export default function UpcomingMatches() {
             });
           }
           
-          reminder.notified = true;
+          newReminders[matchId].notified = true;
           updated = true;
         }
         
         // Remove expired reminders (match already started)
         if (timeUntilMatch < 0) {
-          reminders.delete(matchId);
+          delete newReminders[matchId];
           updated = true;
         }
       });
       
       if (updated) {
-        const obj = Object.fromEntries(reminders);
-        localStorage.setItem("matchRemindersData", JSON.stringify(obj));
-        setReminders(new Map(reminders));
+        localStorage.setItem("matchRemindersData", JSON.stringify(newReminders));
+        setReminders(newReminders);
       }
     };
 
@@ -112,13 +119,12 @@ export default function UpcomingMatches() {
 
   const handleSetReminder = async (match: Match) => {
     // Check if already set
-    if (reminders.has(match._id)) {
+    if (reminders[match._id]) {
       // Remove reminder
-      const newReminders = new Map(reminders);
-      newReminders.delete(match._id);
+      const newReminders = { ...reminders };
+      delete newReminders[match._id];
       setReminders(newReminders);
-      const obj = Object.fromEntries(newReminders);
-      localStorage.setItem("matchRemindersData", JSON.stringify(obj));
+      localStorage.setItem("matchRemindersData", JSON.stringify(newReminders));
       showNotification("Reminder removed", "info");
       return;
     }
@@ -137,11 +143,9 @@ export default function UpcomingMatches() {
       notified: false,
     };
 
-    const newReminders = new Map(reminders);
-    newReminders.set(match._id, reminderData);
+    const newReminders = { ...reminders, [match._id]: reminderData };
     setReminders(newReminders);
-    const obj = Object.fromEntries(newReminders);
-    localStorage.setItem("matchRemindersData", JSON.stringify(obj));
+    localStorage.setItem("matchRemindersData", JSON.stringify(newReminders));
 
     showNotification(
       `Reminder set! You'll be notified before ${match.teamA} vs ${match.teamB}`,
@@ -213,17 +217,16 @@ export default function UpcomingMatches() {
               </div>
 
               <div className="mt-3 sm:mt-4">
-                <Button
-                  fullWidth
+                <button
                   onClick={() => handleSetReminder(match)}
-                  className={`text-xs sm:text-sm py-2 ${
-                    reminders.has(match._id)
+                  className={`w-full rounded-md px-4 py-2 text-xs sm:text-sm font-bold text-center transition-colors ${
+                    reminders[match._id]
                       ? "bg-green-600 text-white hover:bg-green-700"
                       : "bg-slate-900 text-white hover:bg-slate-800"
-                  } shadow-none`}
+                  }`}
                 >
-                  {reminders.has(match._id) ? "✓ Reminder Set" : "🔔 Set Reminder"}
-                </Button>
+                  {reminders[match._id] ? "✓ Reminder Set" : "🔔 Set Reminder"}
+                </button>
               </div>
             </Card>
           ))

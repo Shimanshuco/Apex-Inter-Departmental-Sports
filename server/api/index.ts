@@ -5,6 +5,8 @@ import cors from "cors";
 import adminRoutes from "../src/routes/admin.routes";
 import matchRoutes from "../src/routes/match.routes";
 import captainAuthRoutes from "../src/routes/captainAuth.routes";
+import captainTeamRoutes from "../src/routes/captainTeam.routes";
+import teamRoutes from "../src/routes/team.routes";
 import announcementRoutes from "../src/routes/announcement.routes";
 import galleryRoutes from "../src/routes/gallery.routes";
 import scheduleRoutes from "../src/routes/schedule.routes";
@@ -18,14 +20,13 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
   credentials: true,
-  optionsSuccessStatus: 200, // Some legacy browsers choke on 204
+  optionsSuccessStatus: 200, 
 };
 
-// Apply CORS middleware
 app.use(cors(corsOptions));
 
-// Handle preflight requests explicitly
-app.options("*", cors(corsOptions));
+
+app.options("/{*path}", cors(corsOptions));
 
 // Middleware
 app.use(express.json());
@@ -68,6 +69,8 @@ app.get("/api", (_req, res) => res.json({ message: "Apex Sports API", status: "o
 app.use("/api/admin", dbMiddleware, adminRoutes);
 app.use("/api/matches", dbMiddleware, matchRoutes);
 app.use("/api/captain-auth", dbMiddleware, captainAuthRoutes);
+app.use("/api/captain-teams", dbMiddleware, captainTeamRoutes);
+app.use("/api/teams", dbMiddleware, teamRoutes);
 app.use("/api/announcements", dbMiddleware, announcementRoutes);
 app.use("/api/gallery", dbMiddleware, galleryRoutes);
 app.use("/api/schedules", dbMiddleware, scheduleRoutes);

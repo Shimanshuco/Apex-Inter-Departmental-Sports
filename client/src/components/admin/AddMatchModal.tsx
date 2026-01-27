@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useAdmin } from "../../context/AdminContext";
 import { useNotification } from "../../context/NotificationContext";
 import { API_ENDPOINTS } from "../../config/api";
@@ -8,6 +8,17 @@ interface AddMatchModalProps {
   isOpen: boolean;
   onClose: () => void;
   onMatchAdded: () => void;
+}
+
+interface Team {
+  _id: string;
+  name: string;
+  sport: string;
+  department: string;
+  captain?: {
+    name: string;
+  };
+  status: string;
 }
 
 const SPORTS_OPTIONS = [
@@ -32,6 +43,8 @@ export default function AddMatchModal({
   const { showNotification } = useNotification();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [teamsLoading, setTeamsLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     teamA: "",
@@ -41,14 +54,57 @@ export default function AddMatchModal({
     venue: "",
   });
 
+  // Fetch all teams when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      fetchTeams();
+    }
+  }, [isOpen]);
+
+  const fetchTeams = async () => {
+    setTeamsLoading(true);
+    try {
+      const response = await axios.get(API_ENDPOINTS.ADMIN_TEAMS_LIST, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      // Only include active teams
+      const activeTeams = (response.data.teams || []).filter(
+        (team: Team) => team.status === "active"
+      );
+      setTeams(activeTeams);
+    } catch (err) {
+      console.error("Failed to fetch teams:", err);
+      setTeams([]);
+    } finally {
+      setTeamsLoading(false);
+    }
+  };
+
+  // Filter teams based on selected sport
+  const filteredTeams = useMemo(() => {
+    if (!formData.sport) return [];
+    return teams.filter((team) => team.sport === formData.sport);
+  }, [teams, formData.sport]);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => {
+      // If sport changes, reset team selections
+      if (name === "sport") {
+        return {
+          ...prev,
+          sport: value,
+          teamA: "",
+          teamB: "",
+        };
+      }
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -106,37 +162,7 @@ export default function AddMatchModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Team A
-            </label>
-            <input
-              type="text"
-              name="teamA"
-              value={formData.teamA}
-              onChange={handleChange}
-              required
-              placeholder="Enter Team A name"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Team B
-            </label>
-            <input
-              type="text"
-              name="teamB"
-              value={formData.teamB}
-              onChange={handleChange}
-              required
-              placeholder="Enter Team B name"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Sport
+              Sport (Select First)
             </label>
             <select
               name="sport"
@@ -152,6 +178,78 @@ export default function AddMatchModal({
                 </option>
               ))}
             </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Team A
+            </label>
+            <select
+              name="teamA"
+              value={formData.teamA}
+              onChange={handleChange}
+              required
+              disabled={!formData.sport || teamsLoading}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+            >
+              <option value="">
+                {!formData.sport 
+                  ? "Select sport first" 
+                  : teamsLoading 
+                  ? "Loading teams..." 
+                  : filteredTeams.length === 0 
+                  ? "No teams available for this sport" 
+                  : "Select Team A"}
+              </option>
+              {filteredTeams
+                .filter((team) => team._id !== formData.teamB)
+                .map((team) => (
+                  <option key={team._id} value={team.name}>
+                    {team.name} ({team.department})
+                  </option>
+                ))}
+            </select>
+            {formData.sport && !teamsLoading && filteredTeams.length === 0 && (
+              <p className="mt-1 text-xs text-amber-600">
+                No teams have been created for {formData.sport} yet.
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Team B
+            </label>
+            <select
+              name="teamB"
+              value={formData.teamB}
+              onChange={handleChange}
+              required
+              disabled={!formData.sport || teamsLoading}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+            >
+              <option value="">
+                {!formData.sport 
+                  ? "Select sport first" 
+                  : teamsLoading 
+                  ? "Loading teams..." 
+                  : filteredTeams.length < 2 
+                  ? "Need at least 2 teams" 
+                  : "Select Team B"}
+              </option>
+              {filteredTeams
+                .filter((team) => team._id !== formData.teamA)
+                .map((team) => (
+                  <option key={team._id} value={team.name}>
+                    {team.name} ({team.department})
+                  </option>
+                ))}
+            </select>
+            {formData.sport && !teamsLoading && filteredTeams.length < 2 && filteredTeams.length > 0 && (
+              <p className="mt-1 text-xs text-amber-600">
+                Need at least 2 teams to create a match.
+              </p>
+            )}
           </div>
 
           <div>

@@ -19,22 +19,12 @@ export const API_ENDPOINTS = {
   ADMIN_CAPTAINS_STATUS: (id: string) => `${API_BASE_URL}/admin/captains/${id}/status`,
   ADMIN_CAPTAINS_DELETE: (id: string) => `${API_BASE_URL}/admin/captains/${id}`,
 
-  // Captain - Team Management
-  CAPTAIN_CREATE_TEAM: `${API_BASE_URL}/captain-auth/teams`,
-
   // Admin - Department Player Management
   ADMIN_DEPT_PLAYERS_LIST: `${API_BASE_URL}/admin/department-players`,
   ADMIN_DEPT_PLAYERS_CREATE: `${API_BASE_URL}/admin/department-players`,
   ADMIN_DEPT_PLAYERS_UPDATE: (id: string) => `${API_BASE_URL}/admin/department-players/${id}`,
   ADMIN_DEPT_PLAYERS_STATUS: (id: string) => `${API_BASE_URL}/admin/department-players/${id}/status`,
   ADMIN_DEPT_PLAYERS_DELETE: (id: string) => `${API_BASE_URL}/admin/department-players/${id}`,
-
-  // Teams
-  TEAMS_LIST: `${API_BASE_URL}/teams`,
-  TEAMS_BY_ID: (id: string) => `${API_BASE_URL}/teams/${id}`,
-  TEAMS_CREATE: `${API_BASE_URL}/teams`,
-  TEAMS_UPDATE: (id: string) => `${API_BASE_URL}/teams/${id}`,
-  TEAMS_DELETE: (id: string) => `${API_BASE_URL}/teams/${id}`,
 
   // Matches
   MATCHES_LIST: `${API_BASE_URL}/matches`,
@@ -85,6 +75,25 @@ export const API_ENDPOINTS = {
   CAPTAIN_PLAYERS_ADD: `${API_BASE_URL}/captain-auth/players`,
   CAPTAIN_PLAYERS_UPDATE: (id: string) => `${API_BASE_URL}/captain-auth/players/${id}`,
   CAPTAIN_PLAYERS_DELETE: (id: string) => `${API_BASE_URL}/captain-auth/players/${id}`,
+
+  // Captain - Team Management
+  CAPTAIN_TEAMS_LIST: `${API_BASE_URL}/captain-teams`,
+  CAPTAIN_TEAMS_CREATE: `${API_BASE_URL}/captain-teams`,
+  CAPTAIN_TEAMS_UPDATE: (id: string) => `${API_BASE_URL}/captain-teams/${id}`,
+  CAPTAIN_TEAMS_DELETE: (id: string) => `${API_BASE_URL}/captain-teams/${id}`,
+  CAPTAIN_TEAMS_BY_ID: (id: string) => `${API_BASE_URL}/captain-teams/${id}`,
+  CAPTAIN_TEAMS_ADD_PLAYERS: (id: string) => `${API_BASE_URL}/captain-teams/${id}/players`,
+  CAPTAIN_TEAMS_REMOVE_PLAYER: (teamId: string, playerId: string) => `${API_BASE_URL}/captain-teams/${teamId}/players/${playerId}`,
+  CAPTAIN_TEAMS_AVAILABLE_PLAYERS: `${API_BASE_URL}/captain-teams/available-players`,
+
+  // Admin - Team Management  
+  ADMIN_TEAMS_LIST: `${API_BASE_URL}/teams`,
+  ADMIN_TEAMS_BY_ID: (id: string) => `${API_BASE_URL}/teams/${id}`,
+  ADMIN_TEAMS_UPDATE: (id: string) => `${API_BASE_URL}/teams/${id}`,
+  ADMIN_TEAMS_DELETE: (id: string) => `${API_BASE_URL}/teams/${id}`,
+  ADMIN_TEAMS_STATUS: (id: string) => `${API_BASE_URL}/teams/${id}/status`,
+  ADMIN_TEAMS_BY_DEPARTMENT: (dept: string) => `${API_BASE_URL}/teams/department/${dept}`,
+  ADMIN_TEAMS_BY_SPORT: (sport: string) => `${API_BASE_URL}/teams/sport/${sport}`,
 
   // Schedules
   SCHEDULES_LIST: `${API_BASE_URL}/schedules`,

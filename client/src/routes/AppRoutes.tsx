@@ -6,7 +6,6 @@ import SchedulePage from "../pages/SchedulePage";
 import LiveScorePage from "../pages/LiveScorePage";
 import GalleryPage from "../pages/GalleryPage";
 import AdminPage from "../pages/AdminPage";
-import TeamsPage from "../pages/TeamsPage";
 import AdminLoginPage from "../pages/AdminLoginPage";
 import CaptainRegisterPage from "../pages/CaptainRegisterPage";
 import CaptainLoginPage from "../pages/CaptainLoginPage";
@@ -24,7 +23,6 @@ export default function AppRoutes() {
       <Route path="/schedule" element={<SchedulePage />} />
       <Route path="/live" element={<LiveScorePage />} />
       <Route path="/gallery" element={<GalleryPage />} />
-      <Route path="/teams" element={<TeamsPage />} />
       <Route path="/rules" element={<RulesPage />} />
 
       {/* Captain Routes */}

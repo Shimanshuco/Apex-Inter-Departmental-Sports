@@ -3,8 +3,8 @@ import { API_ENDPOINTS } from "../../config/api";
 
 interface Match {
   _id: string;
-  teamA: { _id: string; name: string };
-  teamB: { _id: string; name: string };
+  teamA: string;
+  teamB: string;
   sport: string;
   scoreA: number;
   scoreB: number;
@@ -111,11 +111,11 @@ export default function RecentResults() {
                           ? "bg-gradient-to-br from-emerald-400 to-emerald-600 text-white" 
                           : "bg-slate-100 text-slate-600"
                       }`}>
-                        {match.teamA?.name?.[0] || "T"}
+                        {(match.teamA || "T")[0]}
                       </div>
                       <div>
                         <div className={`font-bold text-sm ${teamAWins ? "text-emerald-700" : "text-slate-700"}`}>
-                          {match.teamA?.name || "TBD"}
+                          {match.teamA || "TBD"}
                         </div>
                         {teamAWins && (
                           <span className="text-xs text-emerald-600">🏆 Winner</span>
@@ -138,7 +138,7 @@ export default function RecentResults() {
                     <div className={`flex items-center gap-2 flex-1 justify-end ${teamBWins ? "" : "opacity-60"}`}>
                       <div className="text-right">
                         <div className={`font-bold text-sm ${teamBWins ? "text-emerald-700" : "text-slate-700"}`}>
-                          {match.teamB?.name || "TBD"}
+                          {match.teamB || "TBD"}
                         </div>
                         {teamBWins && (
                           <span className="text-xs text-emerald-600">🏆 Winner</span>
@@ -149,7 +149,7 @@ export default function RecentResults() {
                           ? "bg-gradient-to-br from-emerald-400 to-emerald-600 text-white" 
                           : "bg-slate-100 text-slate-600"
                       }`}>
-                        {match.teamB?.name?.[0] || "T"}
+                        {(match.teamB || "T")[0]}
                       </div>
                     </div>
                   </div>

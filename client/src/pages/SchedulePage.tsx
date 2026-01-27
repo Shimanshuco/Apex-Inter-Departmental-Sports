@@ -231,8 +231,8 @@ export default function SchedulePage() {
                         key={match._id}
                         date={formatFullDate(match.date)}
                         sport={match.sport}
-                        teamA={match.teamA?.name || "Team A"}
-                        teamB={match.teamB?.name || "Team B"}
+                        teamA={match.teamA || "Team A"}
+                        teamB={match.teamB || "Team B"}
                         venue={match.venue}
                         time={new Date(match.date).toLocaleTimeString("en-US", {
                           hour: "2-digit",

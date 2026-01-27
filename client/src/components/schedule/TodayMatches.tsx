@@ -3,8 +3,8 @@ import { API_ENDPOINTS } from "../../config/api";
 
 interface Match {
   _id: string;
-  teamA: { _id: string; name: string };
-  teamB: { _id: string; name: string };
+  teamA: string;
+  teamB: string;
   sport: string;
   venue: string;
   date: string;
@@ -120,10 +120,10 @@ export default function TodayMatches() {
                   <div className="flex items-center gap-2 sm:gap-3">
                     <div className="flex items-center gap-1.5 sm:gap-2 flex-1 min-w-0">
                       <div className="h-7 w-7 sm:h-9 sm:w-9 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-xs sm:text-sm font-bold flex-shrink-0">
-                        {(match.teamA?.name || "T")[0]}
+                        {(match.teamA || "T")[0]}
                       </div>
                       <div className="font-bold text-slate-900 text-xs sm:text-sm truncate">
-                        {match.teamA?.name || "TBD"}
+                        {match.teamA || "TBD"}
                       </div>
                     </div>
                     
@@ -133,10 +133,10 @@ export default function TodayMatches() {
                     
                     <div className="flex items-center gap-1.5 sm:gap-2 flex-1 justify-end min-w-0">
                       <div className="font-bold text-slate-900 text-xs sm:text-sm truncate">
-                        {match.teamB?.name || "TBD"}
+                        {match.teamB || "TBD"}
                       </div>
                       <div className="h-7 w-7 sm:h-9 sm:w-9 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-xs sm:text-sm font-bold flex-shrink-0">
-                        {(match.teamB?.name || "T")[0]}
+                        {(match.teamB || "T")[0]}
                       </div>
                     </div>
                   </div>

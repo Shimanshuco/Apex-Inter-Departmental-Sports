@@ -67,8 +67,8 @@ export default function ManageMatches({ onUpdateScore, refreshKey }: ManageMatch
     const sportMatch = selectedSport === "All" || match.sport === selectedSport;
     const statusMatch = selectedStatus === "All" || match.status === selectedStatus;
     const searchMatch = searchQuery === "" || 
-      match.teamA?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      match.teamB?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      match.teamA?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      match.teamB?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       match.venue?.toLowerCase().includes(searchQuery.toLowerCase());
     return sportMatch && statusMatch && searchMatch;
   });
@@ -135,7 +135,7 @@ export default function ManageMatches({ onUpdateScore, refreshKey }: ManageMatch
               </span>
             </div>
             <div className="font-semibold text-slate-900 text-sm mb-1">
-              {match.teamA?.name} vs {match.teamB?.name}
+              {match.teamA} vs {match.teamB}
             </div>
             <div className="text-xs text-slate-500 mb-2">
               {new Date(match.date).toLocaleDateString()} • {match.venue}
@@ -188,7 +188,7 @@ export default function ManageMatches({ onUpdateScore, refreshKey }: ManageMatch
                 <td className="px-4 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-slate-700">{match.sport}</td>
                 <td className="px-4 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-slate-900 font-medium">
                   <div>
-                    {match.teamA?.name} vs {match.teamB?.name}
+                    {match.teamA} vs {match.teamB}
                   </div>
                   <div className="text-xs text-slate-500">{match.venue}</div>
                 </td>

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCaptain } from "../context/CaptainContext";
 import { API_ENDPOINTS } from "../config/api";
-import CaptainTeamManager from "../components/teams/CaptainTeamManager";
+import CaptainTeamManager from "../components/captain/CaptainTeamManager";
 
 const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
@@ -407,11 +407,17 @@ export default function CaptainDashboardPage() {
           <h2 className="text-2xl font-bold mb-2">Hello, Captain {captain.name}! 👋</h2>
           <p className="text-indigo-100">
             {captain.status === "approved" || captain.status === "active"
-              ? `Manage your ${captain.department} department players here.`
+              ? `Manage your ${captain.department} department players and teams here.`
               : "Your account is pending approval. Please wait for admin confirmation."}
           </p>
         </div>
 
+        {/* Team Management Section */}
+        {(captain.status === "approved" || captain.status === "active") && (
+          <div className="mb-8">
+            <CaptainTeamManager />
+          </div>
+        )}
 
         {/* Info Cards */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -703,12 +709,9 @@ export default function CaptainDashboardPage() {
             </div>
           )}
         </div>
-
-        {/* Teams Management Section (Add Team Button) */}
-        <CaptainTeamManager />
         
         {/* Quick Links */}
-        <div className="grid md:grid-cols-3 gap-4 mt-8">
+        <div className="grid md:grid-cols-2 gap-4 mt-8">
           <Link
             to="/schedule"
             className="bg-white rounded-xl p-4 border border-slate-100 hover:shadow-lg transition-all flex items-center gap-3"
@@ -731,18 +734,6 @@ export default function CaptainDashboardPage() {
             <div>
               <p className="font-medium text-slate-800">Scores</p>
               <p className="text-xs text-slate-500">Check match results</p>
-            </div>
-          </Link>
-          <Link
-            to="/teams"
-            className="bg-white rounded-xl p-4 border border-slate-100 hover:shadow-lg transition-all flex items-center gap-3"
-          >
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              👥
-            </div>
-            <div>
-              <p className="font-medium text-slate-800">Teams</p>
-              <p className="text-xs text-slate-500">View all teams</p>
             </div>
           </Link>
         </div>

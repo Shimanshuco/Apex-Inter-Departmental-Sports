@@ -7,13 +7,11 @@ const matchSchema = new mongoose.Schema(
       required: true,
     },
     teamA: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Team",
+      type: String,
       required: true,
     },
     teamB: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Team",
+      type: String,
       required: true,
     },
     sport: {

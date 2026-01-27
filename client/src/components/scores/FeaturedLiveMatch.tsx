@@ -3,8 +3,8 @@ import { API_ENDPOINTS } from "../../config/api";
 
 interface Match {
   _id: string;
-  teamA: { _id: string; name: string };
-  teamB: { _id: string; name: string };
+  teamA: string;
+  teamB: string;
   sport: string;
   venue: string;
   scoreA: number;
@@ -85,10 +85,10 @@ export default function FeaturedLiveMatch() {
             {/* Left Team */}
             <div className="flex items-center gap-3">
               <div className="h-12 w-12 rounded bg-white/15 grid place-items-center font-black text-white">
-                {(liveMatch.teamA?.name || "T")[0]}
+                {(liveMatch.teamA || "T")[0]}
               </div>
               <div className="text-white font-bold text-lg">
-                {liveMatch.teamA?.name || "TBD"}
+                {liveMatch.teamA || "TBD"}
               </div>
             </div>
 
@@ -104,10 +104,10 @@ export default function FeaturedLiveMatch() {
             {/* Right Team */}
             <div className="mt-4 md:mt-0 flex items-center gap-3">
               <div className="h-12 w-12 rounded bg-white/15 grid place-items-center font-black text-white">
-                {(liveMatch.teamB?.name || "T")[0]}
+                {(liveMatch.teamB || "T")[0]}
               </div>
               <div className="text-white font-bold text-lg">
-                {liveMatch.teamB?.name || "TBD"}
+                {liveMatch.teamB || "TBD"}
               </div>
             </div>
           </div>

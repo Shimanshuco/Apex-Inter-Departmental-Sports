@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAdmin } from "../../context/AdminContext";
 import { useNotification } from "../../context/NotificationContext";
 import { API_ENDPOINTS } from "../../config/api";
@@ -30,7 +30,6 @@ export default function AddMatchModal({
 }: AddMatchModalProps) {
   const { token } = useAdmin();
   const { showNotification } = useNotification();
-  const [teams, setTeams] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -41,23 +40,6 @@ export default function AddMatchModal({
     date: "",
     venue: "",
   });
-
-  useEffect(() => {
-    if (isOpen) {
-      fetchTeams();
-    }
-  }, [isOpen]);
-
-  const fetchTeams = async () => {
-    try {
-      const response = await axios.get(API_ENDPOINTS.TEAMS_LIST, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setTeams(response.data.teams);
-    } catch (err) {
-      console.error("Failed to fetch teams");
-    }
-  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -126,40 +108,30 @@ export default function AddMatchModal({
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Team A
             </label>
-            <select
+            <input
+              type="text"
               name="teamA"
               value={formData.teamA}
               onChange={handleChange}
               required
+              placeholder="Enter Team A name"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Select Team</option>
-              {teams.map((team) => (
-                <option key={team._id} value={team._id}>
-                  {team.name}
-                </option>
-              ))}
-            </select>
+            />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Team B
             </label>
-            <select
+            <input
+              type="text"
               name="teamB"
               value={formData.teamB}
               onChange={handleChange}
               required
+              placeholder="Enter Team B name"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Select Team</option>
-              {teams.map((team) => (
-                <option key={team._id} value={team._id}>
-                  {team.name}
-                </option>
-              ))}
-            </select>
+            />
           </div>
 
           <div>

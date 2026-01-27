@@ -4,8 +4,8 @@ import { API_ENDPOINTS } from "../../config/api";
 
 interface Match {
   _id: string;
-  teamA: { _id: string; name: string };
-  teamB: { _id: string; name: string };
+  teamA: string;
+  teamB: string;
   scoreA: number;
   scoreB: number;
   status: string;
@@ -57,13 +57,13 @@ export default function LatestResults() {
         ) : (
           results.map((match) => (
             <div key={match._id} className="flex items-center justify-between px-3 sm:px-5 py-3 sm:py-4 gap-2">
-              <div className="font-semibold text-slate-900 text-xs sm:text-base flex-1 truncate">{match.teamA?.name || "TBD"}</div>
+              <div className="font-semibold text-slate-900 text-xs sm:text-base flex-1 truncate">{match.teamA || "TBD"}</div>
 
               <div className="font-black text-slate-800 text-sm sm:text-base px-2">
                 {match.scoreA ?? 0} - {match.scoreB ?? 0}
               </div>
 
-              <div className="font-semibold text-slate-900 text-xs sm:text-base flex-1 text-right truncate">{match.teamB?.name || "TBD"}</div>
+              <div className="font-semibold text-slate-900 text-xs sm:text-base flex-1 text-right truncate">{match.teamB || "TBD"}</div>
 
               <span className="rounded bg-red-600 px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-bold text-white hidden sm:inline">
                 FINAL

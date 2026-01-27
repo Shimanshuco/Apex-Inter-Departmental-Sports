@@ -5,6 +5,7 @@ import StatCard from "../components/admin/StatCard";
 import ManageMatches from "../components/admin/ManageMatches";
 import ManageCaptains from "../components/admin/ManageCaptains";
 import ManageDepartmentPlayers from "../components/admin/ManageDepartmentPlayers";
+import ManageTeams from "../components/admin/ManageTeams";
 import ManageGallery from "../components/admin/ManageGallery";
 import ManageSchedules from "../components/admin/ManageSchedules";
 import ManageRules from "../components/admin/ManageRules";
@@ -22,8 +23,8 @@ import axios from "axios";
 
 interface Match {
   _id: string;
-  teamA: { name: string };
-  teamB: { name: string };
+  teamA: string;
+  teamB: string;
   status: string;
   scoreA?: number;
   scoreB?: number;
@@ -32,7 +33,6 @@ interface Match {
 export default function AdminPage() {
   const { admin, token } = useAdmin();
   const [stats, setStats] = useState({
-    teams: 0,
     players: 0,
     matches: 0,
     pendingScores: 0,
@@ -42,7 +42,6 @@ export default function AdminPage() {
   const [showAddMatch, setShowAddMatch] = useState(false);
   const [showUpdateScore, setShowUpdateScore] = useState(false);
   const [showAddAnnouncement, setShowAddAnnouncement] = useState(false);
-  const [showAddTeam, setShowAddTeam] = useState(false);
   const [showAddSchedule, setShowAddSchedule] = useState(false);
   const [showAddRule, setShowAddRule] = useState(false);
   const [editSchedule, setEditSchedule] = useState<any>(null);
@@ -62,10 +61,7 @@ export default function AdminPage() {
   const fetchStats = async () => {
     if (!token) return;
     try {
-      const [teamsRes, captainsRes, playersRes, matchesRes] = await Promise.all([
-        axios.get(API_ENDPOINTS.TEAMS_LIST, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
+      const [captainsRes, playersRes, matchesRes] = await Promise.all([
         axios.get(API_ENDPOINTS.ADMIN_CAPTAINS_LIST, {
           headers: { Authorization: `Bearer ${token}` },
         }),
@@ -81,7 +77,6 @@ export default function AdminPage() {
       const playersCount = playersRes.data.players?.length || 0;
 
       setStats({
-        teams: teamsRes.data.teams?.length || 0,
         players: captainsCount + playersCount,
         matches: matchesRes.data.matches?.length || 0,
         pendingScores: matchesRes.data.matches?.filter(
@@ -118,8 +113,8 @@ export default function AdminPage() {
   const openUpdateScore = (match: Match) => {
     setSelectedMatchId(match._id);
     setSelectedMatchDetails({
-      team1Name: match.teamA?.name || "Team A",
-      team2Name: match.teamB?.name || "Team B",
+      team1Name: match.teamA || "Team A",
+      team2Name: match.teamB || "Team B",
       scoreA: match.scoreA,
       scoreB: match.scoreB,
       status: match.status,
@@ -185,16 +180,6 @@ export default function AdminPage() {
               ⚽ Matches
             </button>
             <button
-              onClick={() => setCurrentView("teams")}
-              className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-semibold transition text-xs sm:text-sm whitespace-nowrap ${
-                currentView === "teams"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-              }`}
-            >
-              🛡️ Teams
-            </button>
-            <button
               onClick={() => setCurrentView("captains")}
               className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-semibold transition text-xs sm:text-sm whitespace-nowrap ${
                 currentView === "captains"
@@ -213,6 +198,16 @@ export default function AdminPage() {
               }`}
             >
               👤 Dept Players
+            </button>
+            <button
+              onClick={() => setCurrentView("teams")}
+              className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-semibold transition text-xs sm:text-sm whitespace-nowrap ${
+                currentView === "teams"
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+              }`}
+            >
+              🏆 Teams
             </button>
             <button
               onClick={() => setCurrentView("approvals")}
@@ -281,13 +276,7 @@ export default function AdminPage() {
           <>
             {/* Stats Section */}
             <div className="px-4 sm:px-8 py-4 sm:py-8">
-              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-                <StatCard
-                  icon="🛡️"
-                  count={stats.teams.toString()}
-                  label="Total Teams"
-                  color="bg-blue-900"
-                />
+              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
                 <StatCard
                   icon="👥"
                   count={stats.players.toString()}
@@ -317,12 +306,6 @@ export default function AdminPage() {
                   className="px-3 sm:px-6 py-2 sm:py-3 bg-blue-700 text-white rounded-lg font-semibold hover:bg-blue-800 flex items-center gap-1 sm:gap-2 transition text-xs sm:text-base"
                 >
                   ➕ <span className="hidden sm:inline">Add</span> Match
-                </button>
-                <button
-                  onClick={() => setShowAddTeam(true)}
-                  className="px-3 sm:px-6 py-2 sm:py-3 bg-purple-700 text-white rounded-lg font-semibold hover:bg-purple-800 flex items-center gap-1 sm:gap-2 transition text-xs sm:text-base"
-                >
-                  🛡️ <span className="hidden sm:inline">Add</span> Team
                 </button>
                 <button
                   onClick={() => setCurrentView("captains")}
@@ -373,21 +356,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {currentView === "teams" && (
-          <div className="px-4 sm:px-8 py-4 sm:py-8">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4 sm:mb-6">
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Manage Teams</h2>
-              <button
-                onClick={() => setShowAddTeam(true)}
-                className="px-4 sm:px-6 py-2 sm:py-3 bg-purple-700 text-white rounded-lg font-semibold hover:bg-purple-800 transition text-sm sm:text-base w-full sm:w-auto"
-              >
-                🛡️ Add Team
-              </button>
-            </div>
-            {/* <ManageTeams refreshKey={refreshKey} /> */}
-          </div>
-        )}
-
         {currentView === "captains" && (
           <div className="px-4 sm:px-8 py-4 sm:py-8">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4 sm:mb-6">
@@ -403,6 +371,15 @@ export default function AdminPage() {
               <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Manage Department Players</h2>
             </div>
             <ManageDepartmentPlayers refreshKey={refreshKey} />
+          </div>
+        )}
+
+        {currentView === "teams" && (
+          <div className="px-4 sm:px-8 py-4 sm:py-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4 sm:mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Manage Teams</h2>
+            </div>
+            <ManageTeams refreshKey={refreshKey} />
           </div>
         )}
 

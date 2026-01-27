@@ -1,5 +1,24 @@
 import mongoose from "mongoose";
 
+const SPORTS_LIST = [
+  "Football",
+  "Cricket",
+  "Basketball",
+  "Volleyball",
+  "Badminton",
+  "Table Tennis",
+  "Tennis",
+  "Hockey",
+  "Kabaddi",
+  "Kho-Kho",
+  "Athletics",
+  "Swimming",
+  "Chess",
+  "Carrom",
+  "Handball",
+  "Throwball",
+];
+
 const teamSchema = new mongoose.Schema(
   {
     name: {
@@ -8,20 +27,8 @@ const teamSchema = new mongoose.Schema(
     },
     sport: {
       type: String,
+      enum: SPORTS_LIST,
       required: true,
-      enum: [
-        "Football",
-        "Volleyball",
-        "Basketball",
-        "Kabaddi",
-        "Badminton",
-        "Chess",
-        "Kho Kho",
-        "Table Tennis",
-        "Tug of War",
-        "Athletics (100 or 200 meter)",
-        "Cricket"
-      ],
     },
     department: {
       type: String,
@@ -36,25 +43,26 @@ const teamSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "DepartmentPlayer",
-      }
+      },
     ],
-    record: {
-      type: String,
-      default: "0-0",
+    maxPlayers: {
+      type: Number,
+      default: 15,
     },
-    wins: {
+    status: {
       type: String,
-      default: "0",
+      enum: ["active", "inactive", "pending"],
+      default: "active",
     },
-    standings: {
-      type: String,
-      default: "N/A",
+    createdAt: {
+      type: Date,
+      default: Date.now,
     },
-    description: String,
-    // coach: String, // Removed coach, use captain only
-    imageUrl: String,
   },
   { timestamps: true }
 );
+
+// Compound index to ensure one team per sport per department
+teamSchema.index({ sport: 1, department: 1 }, { unique: true });
 
 export const Team = mongoose.model("Team", teamSchema);

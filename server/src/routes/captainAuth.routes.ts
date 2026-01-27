@@ -10,7 +10,6 @@ import {
   deleteDepartmentPlayer,
   getSportsList,
 } from "../controllers/captainAuth.controller";
-import { createTeam } from "../controllers/captainTeam.controller";
 import { captainAuthMiddleware } from "../middlewares/captainAuth";
 
 const router = Router();
@@ -29,8 +28,5 @@ router.get("/players", captainAuthMiddleware, getDepartmentPlayers);
 router.post("/players", captainAuthMiddleware, addDepartmentPlayer);
 router.put("/players/:id", captainAuthMiddleware, updateDepartmentPlayer);
 router.delete("/players/:id", captainAuthMiddleware, deleteDepartmentPlayer);
-
-// Captain Team management (for /api/captain-auth/teams)
-router.post("/teams", captainAuthMiddleware, createTeam);
 
 export default router;

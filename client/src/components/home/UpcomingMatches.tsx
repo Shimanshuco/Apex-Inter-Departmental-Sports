@@ -7,8 +7,8 @@ import { useNotification } from "../../context/NotificationContext";
 
 interface Match {
   _id: string;
-  teamA: { _id: string; name: string };
-  teamB: { _id: string; name: string };
+  teamA: string;
+  teamB: string;
   sport: string;
   venue: string;
   date: string;
@@ -131,8 +131,8 @@ export default function UpcomingMatches() {
     // Add reminder
     const reminderData: ReminderData = {
       matchId: match._id,
-      teamA: match.teamA?.name || "Team A",
-      teamB: match.teamB?.name || "Team B",
+      teamA: match.teamA || "Team A",
+      teamB: match.teamB || "Team B",
       matchTime: new Date(match.date).getTime(),
       notified: false,
     };
@@ -144,7 +144,7 @@ export default function UpcomingMatches() {
     localStorage.setItem("matchRemindersData", JSON.stringify(obj));
 
     showNotification(
-      `Reminder set! You'll be notified before ${match.teamA?.name} vs ${match.teamB?.name}`,
+      `Reminder set! You'll be notified before ${match.teamA} vs ${match.teamB}`,
       "success"
     );
   };
@@ -199,13 +199,13 @@ export default function UpcomingMatches() {
             <Card key={match._id} className="border p-3 sm:p-4 shadow-none">
               <div className="flex items-center justify-between">
                 <div className="font-bold text-slate-900 text-sm sm:text-base">
-                  {match.teamA?.name || "TBD"}
+                  {match.teamA || "TBD"}
                 </div>
                 <div className="text-xs sm:text-sm text-slate-500">{formatTime(match.date)}</div>
               </div>
 
               <div className="mt-1 sm:mt-2 text-xs sm:text-sm text-slate-600">
-                vs <span className="font-semibold text-slate-800">{match.teamB?.name || "TBD"}</span>
+                vs <span className="font-semibold text-slate-800">{match.teamB || "TBD"}</span>
               </div>
 
               <div className="mt-1 sm:mt-2 text-xs text-slate-500">

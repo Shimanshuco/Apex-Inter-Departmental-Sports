@@ -2,7 +2,6 @@ import { NavLink } from "react-router-dom";
 
 const navItems = [
   { icon: "📊", label: "Dashboard", path: "/admin" },
-  { icon: "🏆", label: "Manage Teams", path: "/admin/teams" },
   { icon: "👥", label: "Manage Players", path: "/admin/players" },
   { icon: "📅", label: "Manage Schedule", path: "/admin/schedule" },
   { icon: "✏️", label: "Update Scores", path: "/admin/scores" },

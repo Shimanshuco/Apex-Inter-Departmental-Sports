@@ -4,33 +4,26 @@ import Button from "../ui/Button";
 import { API_ENDPOINTS } from "../../config/api";
 
 interface Stats {
-  totalTeams: number;
   matchesPlayed: number;
   liveMatches: number;
   upcomingMatches: number;
+  totalMatches: number;
 }
 
 export default function StatsRow() {
   const [stats, setStats] = useState<Stats>({
-    totalTeams: 0,
     matchesPlayed: 0,
     liveMatches: 0,
     upcomingMatches: 0,
+    totalMatches: 0,
   });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [teamsRes, matchesRes] = await Promise.all([
-          fetch(API_ENDPOINTS.TEAMS_LIST),
-          fetch(API_ENDPOINTS.MATCHES_LIST),
-        ]);
-
-        const teamsData = await teamsRes.json();
+        const matchesRes = await fetch(API_ENDPOINTS.MATCHES_LIST);
         const matchesData = await matchesRes.json();
-
-        const teams = teamsData.teams || [];
         const matches = matchesData.matches || [];
 
         const now = new Date();
@@ -49,10 +42,10 @@ export default function StatsRow() {
         ).length;
 
         setStats({
-          totalTeams: teams.length,
           matchesPlayed,
           liveMatches,
           upcomingMatches,
+          totalMatches: matches.length,
         });
       } catch (error) {
         console.error("Failed to fetch stats:", error);
@@ -65,7 +58,7 @@ export default function StatsRow() {
   }, []);
 
   const statsData = [
-    { label: "Total Teams", value: stats.totalTeams.toString().padStart(2, "0"), color: "bg-blue-800", link: "/teams", icon: "🛡️" },
+    { label: "Total Matches", value: stats.totalMatches.toString().padStart(2, "0"), color: "bg-blue-800", link: "/scores", icon: "📊" },
     { label: "Matches Played", value: stats.matchesPlayed.toString().padStart(2, "0"), color: "bg-emerald-700", link: "/scores", icon: "🏆" },
     { label: "Live Matches", value: stats.liveMatches.toString().padStart(2, "0"), color: "bg-red-700", link: "/scores", icon: "🔴" },
     { label: "Upcoming Matches", value: stats.upcomingMatches.toString().padStart(2, "0"), color: "bg-yellow-600", link: "/schedule", icon: "📅" },

@@ -55,10 +55,6 @@ export default function Navbar() {
               Schedule
             </NavLink>
 
-            <NavLink className={navClass} to="/teams">
-              Teams
-            </NavLink>
-
             <NavLink className={navClass} to="/gallery">
               Gallery
             </NavLink>
@@ -191,14 +187,6 @@ export default function Navbar() {
               onClick={() => setIsMobileMenuOpen(false)}
             >
               📅 Schedule
-            </NavLink>
-
-            <NavLink 
-              className={({ isActive }) => `px-4 py-3 rounded-lg font-medium ${isActive ? "bg-blue-50 text-blue-700" : "text-slate-700 hover:bg-slate-50"}`}
-              to="/teams"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              🛡️ Teams
             </NavLink>
 
             <NavLink 

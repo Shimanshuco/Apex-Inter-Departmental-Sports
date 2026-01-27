@@ -83,8 +83,8 @@ export default function ScoresPage() {
                       key={match._id}
                       type={match.status === "live" ? "live" : "finished"}
                       title={match.sport}
-                      teamA={match.teamA?.name || "TBD"}
-                      teamB={match.teamB?.name || "TBD"}
+                      teamA={match.teamA || "TBD"}
+                      teamB={match.teamB || "TBD"}
                       score={match.scoreA?.toString() || "0"}
                       scoreB={match.scoreB?.toString() || "0"}
                       status={match.status === "live" ? "LIVE" : "FINAL"}

@@ -33,7 +33,8 @@ const SPORTS = [
   "Kho Kho",
   "Table Tennis",
   "Tug of War",
-  "Sack Race",
+  "Cricket",
+  "Athletics",
 ];
 
 const GENDERS = ["Male", "Female", "Male and Female Both"];

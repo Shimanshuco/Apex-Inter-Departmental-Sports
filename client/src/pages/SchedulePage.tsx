@@ -140,7 +140,8 @@ export default function SchedulePage() {
       "Kho Kho": "🏃",
       "Table Tennis": "🏓",
       "Tug of War": "🪢",
-      "Sack Race": "🏃",
+      Cricket: "🏏",
+      Athletics: "🏃‍♂️",
       General: "📅",
     };
     return icons[sport] || "🎯";
@@ -148,30 +149,31 @@ export default function SchedulePage() {
 
   const getSportColor = (sport: string) => {
     const colors: Record<string, string> = {
-      Football: "bg-green-500",
-      Volleyball: "bg-yellow-500",
-      Basketball: "bg-orange-500",
-      Kabaddi: "bg-red-500",
-      Badminton: "bg-blue-500",
-      Chess: "bg-gray-700",
-      "Kho Kho": "bg-purple-500",
-      "Table Tennis": "bg-cyan-500",
-      "Tug of War": "bg-amber-600",
-      "Sack Race": "bg-pink-500",
-      General: "bg-slate-500",
+      Football: "bg-emerald-100 text-emerald-700",
+      Volleyball: "bg-amber-100 text-amber-700",
+      Basketball: "bg-orange-100 text-orange-700",
+      Kabaddi: "bg-red-100 text-red-700",
+      Badminton: "bg-sky-100 text-sky-700",
+      Chess: "bg-slate-200 text-slate-700",
+      "Kho Kho": "bg-violet-100 text-violet-700",
+      "Table Tennis": "bg-cyan-100 text-cyan-700",
+      "Tug of War": "bg-yellow-100 text-yellow-700",
+      Cricket: "bg-lime-100 text-lime-700",
+      Athletics: "bg-rose-100 text-rose-700",
+      General: "bg-slate-100 text-slate-600",
     };
-    return colors[sport] || "bg-blue-500";
+    return colors[sport] || "bg-blue-100 text-blue-700";
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
       <Navbar />
 
       <main>
         {/* Header Section */}
-        <div className="bg-gradient-to-r from-slate-800 via-slate-900 to-slate-800">
+        <div className="bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700">
           <div className="mx-auto max-w-6xl px-4 py-6 sm:py-8">
-            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
               Match Schedule
             </h1>
             <p className="text-slate-300 mt-1 text-sm sm:text-base">View upcoming matches and set reminders</p>
@@ -190,14 +192,14 @@ export default function SchedulePage() {
             {/* Left side - Matches */}
             <div className="lg:col-span-2 space-y-4 sm:space-y-6">
               {/* Sport Tabs */}
-              <div className="rounded-xl bg-white shadow-md overflow-hidden">
-                <div className="flex items-center gap-2 border-b bg-slate-100 px-3 sm:px-4 py-2 sm:py-3 overflow-x-auto scrollbar-hide">
+              <div className="rounded-xl bg-white shadow-sm border border-slate-200/60 overflow-hidden">
+                <div className="flex items-center gap-2 border-b border-slate-100 bg-slate-50/50 px-3 sm:px-4 py-2 sm:py-3 overflow-x-auto scrollbar-hide">
                   <button
                     onClick={() => setSelectedSport("All")}
-                    className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-semibold text-xs sm:text-sm whitespace-nowrap transition-colors ${
+                    className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium text-xs sm:text-sm whitespace-nowrap transition-colors ${
                       selectedSport === "All"
-                        ? "bg-blue-600 text-white"
-                        : "bg-white text-slate-700 hover:bg-slate-200"
+                        ? "bg-slate-600 text-white"
+                        : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
                     }`}
                   >
                     All Sports
@@ -206,10 +208,10 @@ export default function SchedulePage() {
                     <button
                       key={sport}
                       onClick={() => setSelectedSport(sport)}
-                      className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-semibold text-xs sm:text-sm whitespace-nowrap transition-colors ${
+                      className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium text-xs sm:text-sm whitespace-nowrap transition-colors ${
                         selectedSport === sport
-                          ? "bg-blue-600 text-white"
-                          : "bg-white text-slate-700 hover:bg-slate-200"
+                          ? "bg-slate-600 text-white"
+                          : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
                       }`}
                     >
                       {sport}
@@ -255,10 +257,10 @@ export default function SchedulePage() {
         </section>
 
         {/* Event Schedule Section */}
-        <section className="mx-auto max-w-6xl px-3 sm:px-4 py-6 sm:py-8 border-t">
+        <section className="mx-auto max-w-6xl px-3 sm:px-4 py-6 sm:py-8 border-t border-slate-200">
           <div className="mb-6">
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-              📅 Event Schedule
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
+              <span className="text-2xl">📅</span> Event Schedule
             </h2>
             <p className="text-slate-500 mt-1 text-sm sm:text-base">All scheduled events and activities by sport</p>
           </div>
@@ -266,85 +268,125 @@ export default function SchedulePage() {
           {/* Schedule Content */}
           {schedulesLoading ? (
             <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="mt-4 text-gray-500">Loading schedules...</p>
+              <div className="animate-spin rounded-full h-10 w-10 border-2 border-slate-200 border-t-slate-500 mx-auto"></div>
+              <p className="mt-4 text-slate-500">Loading schedules...</p>
             </div>
           ) : schedules.length === 0 ? (
-            <div className="text-center py-12 bg-white rounded-xl shadow-md">
-              <div className="text-6xl mb-4">📅</div>
-              <h3 className="text-xl font-semibold text-gray-700">No Schedules Found</h3>
-              <p className="text-gray-500 mt-2">No schedules have been added yet.</p>
+            <div className="text-center py-12 bg-white rounded-xl shadow-sm border border-slate-200/60">
+              <div className="text-5xl mb-4">📅</div>
+              <h3 className="text-lg font-semibold text-slate-700">No Schedules Found</h3>
+              <p className="text-slate-500 mt-2 text-sm">No schedules have been added yet.</p>
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-5">
               {sortedDates.map((dateStr) => (
-                <div key={dateStr} className="bg-white rounded-xl shadow-md overflow-hidden">
+                <div key={dateStr} className="bg-white rounded-xl shadow-sm border border-slate-200/60 overflow-hidden">
                   {/* Date Header */}
-                  <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 sm:px-6 py-3 sm:py-4">
-                    <h3 className="text-lg sm:text-xl font-bold text-white">
+                  <div className="bg-gradient-to-r from-slate-600 to-slate-500 px-4 sm:px-6 py-3 sm:py-4">
+                    <h3 className="text-base sm:text-lg font-semibold text-white">
                       {formatScheduleDate(dateStr)}
                     </h3>
                   </div>
 
+                  {/* Schedule Table Header */}
+                  <div className="hidden sm:grid sm:grid-cols-12 gap-3 px-4 sm:px-6 py-2.5 bg-slate-50 border-b border-slate-100 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                    <div className="col-span-1 text-center">S.No</div>
+                    <div className="col-span-2">Time</div>
+                    <div className="col-span-5">Activity</div>
+                    <div className="col-span-2 text-center">Gender</div>
+                    <div className="col-span-2 text-center">Sport</div>
+                  </div>
+
                   {/* Schedule Items */}
-                  <div className="divide-y">
+                  <div className="divide-y divide-slate-100">
                     {groupedByDate[dateStr]
                       .sort((a, b) => a.sno - b.sno)
                       .map((schedule) => (
                         <div
                           key={schedule._id}
-                          className="px-4 sm:px-6 py-3 sm:py-4 hover:bg-slate-50 transition-colors flex flex-col sm:flex-row sm:items-center gap-3"
+                          className="px-4 sm:px-6 py-3 sm:py-3.5 hover:bg-slate-50/50 transition-colors"
                         >
-                          {/* S.No Badge */}
-                          <div className="flex items-center gap-3 sm:w-20">
-                            <span className="w-8 h-8 flex items-center justify-center bg-slate-200 text-slate-700 font-bold rounded-full text-sm">
-                              {schedule.sno}
-                            </span>
-                          </div>
-
-                          {/* Time */}
-                          <div className="sm:w-28">
-                            <span className="px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-sm font-medium">
-                              🕐 {formatTime(schedule.time)}
-                            </span>
-                          </div>
-
-                          {/* Activity */}
-                          <div className="flex-1">
-                            <p className="text-slate-900 font-medium text-sm sm:text-base">
-                              {schedule.activity}
-                            </p>
-                            {schedule.matchDetail && (
-                              <p className="text-slate-500 text-xs mt-0.5">
-                                {schedule.matchDetail}
-                              </p>
-                            )}
-                          </div>
-
-                          {/* Gender Badge - only show for sports, not General */}
-                          {schedule.gender && (
-                            <div>
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                schedule.gender === "Male" 
-                                  ? "bg-blue-100 text-blue-700" 
-                                  : schedule.gender === "Female" 
-                                  ? "bg-pink-100 text-pink-700" 
-                                  : "bg-purple-100 text-purple-700"
-                              }`}>
-                                {schedule.gender === "Male" ? "👨" : schedule.gender === "Female" ? "👩" : "👥"} {schedule.gender}
+                          {/* Mobile View */}
+                          <div className="sm:hidden space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="w-7 h-7 flex items-center justify-center bg-slate-100 text-slate-600 font-semibold rounded-full text-xs">
+                                {schedule.sno}
+                              </span>
+                              <span className="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-medium">
+                                {formatTime(schedule.time)}
                               </span>
                             </div>
-                          )}
+                            <p className="text-slate-800 font-medium text-sm">{schedule.activity}</p>
+                            {schedule.matchDetail && (
+                              <p className="text-slate-500 text-xs">{schedule.matchDetail}</p>
+                            )}
+                            <div className="flex items-center gap-2 flex-wrap">
+                              {schedule.gender && (
+                                <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                                  schedule.gender === "Male" 
+                                    ? "bg-blue-50 text-blue-600" 
+                                    : schedule.gender === "Female" 
+                                    ? "bg-pink-50 text-pink-600" 
+                                    : "bg-purple-50 text-purple-600"
+                                }`}>
+                                  {schedule.gender}
+                                </span>
+                              )}
+                              <span className={`px-2 py-0.5 rounded text-xs font-medium ${getSportColor(schedule.sport)}`}>
+                                {schedule.sport}
+                              </span>
+                            </div>
+                          </div>
 
-                          {/* Sport Badge */}
-                          <div>
-                            <span
-                              className={`px-3 py-1 ${getSportColor(
-                                schedule.sport
-                              )} text-white rounded-full text-xs sm:text-sm font-medium`}
-                            >
-                              {getSportIcon(schedule.sport)} {schedule.sport}
-                            </span>
+                          {/* Desktop View */}
+                          <div className="hidden sm:grid sm:grid-cols-12 gap-3 items-center">
+                            {/* S.No */}
+                            <div className="col-span-1 text-center">
+                              <span className="w-7 h-7 inline-flex items-center justify-center bg-slate-100 text-slate-600 font-semibold rounded-full text-xs">
+                                {schedule.sno}
+                              </span>
+                            </div>
+
+                            {/* Time */}
+                            <div className="col-span-2">
+                              <span className="px-2.5 py-1 bg-slate-100 text-slate-600 rounded text-xs font-medium">
+                                {formatTime(schedule.time)}
+                              </span>
+                            </div>
+
+                            {/* Activity */}
+                            <div className="col-span-5">
+                              <p className="text-slate-800 font-medium text-sm">
+                                {schedule.activity}
+                              </p>
+                              {schedule.matchDetail && (
+                                <p className="text-slate-400 text-xs mt-0.5">
+                                  {schedule.matchDetail}
+                                </p>
+                              )}
+                            </div>
+
+                            {/* Gender */}
+                            <div className="col-span-2 text-center">
+                              {schedule.gender && (
+                                <span className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-medium ${
+                                  schedule.gender === "Male" 
+                                    ? "bg-blue-50 text-blue-600" 
+                                    : schedule.gender === "Female" 
+                                    ? "bg-pink-50 text-pink-600" 
+                                    : "bg-purple-50 text-purple-600"
+                                }`}>
+                                  {schedule.gender}
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Sport */}
+                            <div className="col-span-2 text-center">
+                              <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-medium ${getSportColor(schedule.sport)}`}>
+                                {getSportIcon(schedule.sport)} {schedule.sport}
+                              </span>
+                            </div>
                           </div>
                         </div>
                       ))}

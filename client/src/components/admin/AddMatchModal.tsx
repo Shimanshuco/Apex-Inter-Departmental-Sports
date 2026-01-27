@@ -31,7 +31,8 @@ const SPORTS_OPTIONS = [
   "Kho Kho",
   "Table Tennis",
   "Tug of War",
-  "Sack Race",
+  "Cricket",
+  "Athletics",
 ];
 
 export default function AddMatchModal({

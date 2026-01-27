@@ -256,32 +256,33 @@ export default function ManageCaptains({ refreshKey }: ManageCaptainsProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
-      <div className="border-b px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-        <h2 className="text-lg sm:text-xl font-extrabold text-slate-900">
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="border-b border-slate-200 px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <h2 className="text-lg sm:text-xl font-semibold text-slate-800">
           Manage Captains
         </h2>
         <button
           onClick={openAddModal}
-          className="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-lg font-semibold text-sm shadow-lg transition-all flex items-center gap-2 justify-center"
+          className="px-4 py-2 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-medium text-sm shadow-sm transition-all flex items-center gap-2 justify-center"
         >
-          ➕ Add Captain
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+          Add Captain
         </button>
       </div>
 
       {/* Filter Bar */}
-      <div className="border-b px-3 sm:px-6 py-3 sm:py-4 bg-slate-50 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-4">
+      <div className="border-b border-slate-200 px-3 sm:px-6 py-4 bg-slate-50 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-4">
         <input
           type="text"
           placeholder="Search by name, email, department..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="px-3 sm:px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:min-w-[200px] sm:w-auto"
+          className="px-3 sm:px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 w-full sm:min-w-[200px] sm:w-auto bg-white"
         />
         <select
           value={selectedStatus}
           onChange={(e) => setSelectedStatus(e.target.value)}
-          className="px-3 sm:px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none w-full sm:w-auto"
+          className="px-3 sm:px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none w-full sm:w-auto bg-white"
         >
           <option value="All">All Status</option>
           <option value="pending">Pending</option>
@@ -308,29 +309,29 @@ export default function ManageCaptains({ refreshKey }: ManageCaptainsProps) {
             </div>
             <div className="text-xs text-slate-600 space-y-1.5 mb-3 bg-slate-50 p-3 rounded-lg">
               <div className="flex items-center gap-2">
-                <span className="text-indigo-600 font-bold">🎫 Captain ID:</span>
-                <span className="font-mono font-semibold text-indigo-700">
+                <span className="text-slate-600 font-medium">Captain ID:</span>
+                <span className="font-mono font-semibold text-slate-700">
                   {captain.uniqueId}
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-slate-500">📋 R-Number:</span>
+                <span className="text-slate-500">R-Number:</span>
                 <span className="font-mono">{captain.rNumber}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-slate-500">📧 Email:</span>
+                <span className="text-slate-500">Email:</span>
                 <span>{captain.email}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-slate-500">📱 Phone:</span>
+                <span className="text-slate-500">Phone:</span>
                 <span>{captain.phone}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-slate-500">🏢 Dept:</span>
+                <span className="text-slate-500">Dept:</span>
                 <span>{captain.department}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-slate-500">🩸 Blood:</span>
+                <span className="text-slate-500">Blood:</span>
                 <span>{captain.bloodGroup}</span>
               </div>
             </div>
@@ -339,45 +340,45 @@ export default function ManageCaptains({ refreshKey }: ManageCaptainsProps) {
                 <>
                   <button
                     onClick={() => handleUpdateStatus(captain._id, "approved")}
-                    className="flex-1 text-green-600 hover:text-green-700 font-semibold px-2 py-1.5 bg-green-50 rounded text-xs"
+                    className="flex-1 text-emerald-600 hover:text-emerald-700 font-medium px-2 py-1.5 bg-emerald-50 hover:bg-emerald-100 rounded text-xs transition-colors"
                   >
-                    ✓ Approve
+                    Approve
                   </button>
                   <button
                     onClick={() => handleUpdateStatus(captain._id, "rejected")}
-                    className="flex-1 text-orange-600 hover:text-orange-700 font-semibold px-2 py-1.5 bg-orange-50 rounded text-xs"
+                    className="flex-1 text-orange-600 hover:text-orange-700 font-medium px-2 py-1.5 bg-orange-50 hover:bg-orange-100 rounded text-xs transition-colors"
                   >
-                    ✕ Reject
+                    Reject
                   </button>
                 </>
               )}
               {(captain.status === "approved" || captain.status === "active") && (
                 <button
                   onClick={() => handleUpdateStatus(captain._id, "inactive")}
-                  className="flex-1 text-gray-600 hover:text-gray-700 font-semibold px-2 py-1.5 bg-gray-50 rounded text-xs"
+                  className="flex-1 text-slate-600 hover:text-slate-700 font-medium px-2 py-1.5 bg-slate-100 hover:bg-slate-200 rounded text-xs transition-colors"
                 >
-                  ⏸️ Deactivate
+                  Deactivate
                 </button>
               )}
               {captain.status === "inactive" && (
                 <button
                   onClick={() => handleUpdateStatus(captain._id, "active")}
-                  className="flex-1 text-green-600 hover:text-green-700 font-semibold px-2 py-1.5 bg-green-50 rounded text-xs"
+                  className="flex-1 text-emerald-600 hover:text-emerald-700 font-medium px-2 py-1.5 bg-emerald-50 hover:bg-emerald-100 rounded text-xs transition-colors"
                 >
-                  ▶️ Activate
+                  Activate
                 </button>
               )}
               <button
                 onClick={() => openEditModal(captain)}
-                className="flex-1 text-blue-600 hover:text-blue-700 font-semibold px-2 py-1.5 bg-blue-50 rounded text-xs"
+                className="flex-1 text-slate-600 hover:text-slate-700 font-medium px-2 py-1.5 bg-slate-100 hover:bg-slate-200 rounded text-xs transition-colors"
               >
-                ✏️ Edit
+                Edit
               </button>
               <button
                 onClick={() => handleDelete(captain._id)}
-                className="text-red-600 hover:text-red-700 font-semibold px-3 py-1.5 bg-red-50 rounded text-xs"
+                className="text-red-600 hover:text-red-700 font-medium px-3 py-1.5 bg-red-50 hover:bg-red-100 rounded text-xs transition-colors"
               >
-                🗑️
+                Delete
               </button>
             </div>
           </div>
@@ -387,16 +388,16 @@ export default function ManageCaptains({ refreshKey }: ManageCaptainsProps) {
       {/* Desktop Table */}
       <div className="hidden sm:block overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-indigo-900 text-white">
+          <thead className="bg-slate-100 border-b border-slate-200">
             <tr>
-              <th className="px-3 py-3 text-left text-xs font-semibold">Name / Email</th>
-              <th className="px-3 py-3 text-left text-xs font-semibold">R-Number</th>
-              <th className="px-3 py-3 text-left text-xs font-semibold">Captain ID</th>
-              <th className="px-3 py-3 text-left text-xs font-semibold">Phone</th>
-              <th className="px-3 py-3 text-left text-xs font-semibold">Department</th>
-              <th className="px-3 py-3 text-left text-xs font-semibold">Blood</th>
-              <th className="px-3 py-3 text-left text-xs font-semibold">Status</th>
-              <th className="px-3 py-3 text-left text-xs font-semibold">Actions</th>
+              <th className="px-3 py-3 text-left text-xs font-semibold text-slate-700">Name / Email</th>
+              <th className="px-3 py-3 text-left text-xs font-semibold text-slate-700">R-Number</th>
+              <th className="px-3 py-3 text-left text-xs font-semibold text-slate-700">Captain ID</th>
+              <th className="px-3 py-3 text-left text-xs font-semibold text-slate-700">Phone</th>
+              <th className="px-3 py-3 text-left text-xs font-semibold text-slate-700">Department</th>
+              <th className="px-3 py-3 text-left text-xs font-semibold text-slate-700">Blood</th>
+              <th className="px-3 py-3 text-left text-xs font-semibold text-slate-700">Status</th>
+              <th className="px-3 py-3 text-left text-xs font-semibold text-slate-700">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y">
@@ -409,7 +410,7 @@ export default function ManageCaptains({ refreshKey }: ManageCaptainsProps) {
                 <td className="px-3 py-3 text-xs text-slate-700 font-mono">
                   {captain.rNumber}
                 </td>
-                <td className="px-3 py-3 text-xs text-indigo-600 font-mono font-bold">
+                <td className="px-3 py-3 text-xs text-slate-700 font-mono font-semibold">
                   {captain.uniqueId}
                 </td>
                 <td className="px-3 py-3 text-xs text-slate-700">{captain.phone}</td>
@@ -430,51 +431,51 @@ export default function ManageCaptains({ refreshKey }: ManageCaptainsProps) {
                       <>
                         <button
                           onClick={() => handleUpdateStatus(captain._id, "approved")}
-                          className="text-green-600 hover:text-green-700 font-semibold text-xs"
+                          className="text-emerald-600 hover:text-emerald-700 font-medium text-xs px-2 py-1 bg-emerald-50 hover:bg-emerald-100 rounded transition-colors"
                           title="Approve"
                         >
-                          ✓
+                          Approve
                         </button>
                         <button
                           onClick={() => handleUpdateStatus(captain._id, "rejected")}
-                          className="text-orange-600 hover:text-orange-700 font-semibold text-xs"
+                          className="text-orange-600 hover:text-orange-700 font-medium text-xs px-2 py-1 bg-orange-50 hover:bg-orange-100 rounded transition-colors"
                           title="Reject"
                         >
-                          ✕
+                          Reject
                         </button>
                       </>
                     )}
                     {(captain.status === "approved" || captain.status === "active") && (
                       <button
                         onClick={() => handleUpdateStatus(captain._id, "inactive")}
-                        className="text-gray-600 hover:text-gray-700 font-semibold text-xs"
+                        className="text-slate-600 hover:text-slate-700 font-medium text-xs px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded transition-colors"
                         title="Deactivate"
                       >
-                        ⏸️
+                        Deactivate
                       </button>
                     )}
                     {captain.status === "inactive" && (
                       <button
                         onClick={() => handleUpdateStatus(captain._id, "active")}
-                        className="text-green-600 hover:text-green-700 font-semibold text-xs"
+                        className="text-emerald-600 hover:text-emerald-700 font-medium text-xs px-2 py-1 bg-emerald-50 hover:bg-emerald-100 rounded transition-colors"
                         title="Activate"
                       >
-                        ▶️
+                        Activate
                       </button>
                     )}
                     <button
                       onClick={() => openEditModal(captain)}
-                      className="text-blue-600 hover:text-blue-700 font-semibold text-xs"
+                      className="text-slate-600 hover:text-slate-700 font-medium text-xs px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded transition-colors"
                       title="Edit"
                     >
-                      ✏️
+                      Edit
                     </button>
                     <button
                       onClick={() => handleDelete(captain._id)}
-                      className="text-red-600 hover:text-red-700 font-semibold text-xs"
+                      className="text-red-600 hover:text-red-700 font-medium text-xs px-2 py-1 bg-red-50 hover:bg-red-100 rounded transition-colors"
                       title="Delete"
                     >
-                      🗑️
+                      Delete
                     </button>
                   </div>
                 </td>

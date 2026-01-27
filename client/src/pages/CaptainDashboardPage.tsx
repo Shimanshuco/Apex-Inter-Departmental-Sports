@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCaptain } from "../context/CaptainContext";
+import { useNotification } from "../context/NotificationContext";
 import { API_ENDPOINTS } from "../config/api";
 import CaptainTeamManager from "../components/captain/CaptainTeamManager";
 
@@ -9,21 +10,16 @@ const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 const SPORTS_LIST = [
   "Football",
-  "Cricket",
-  "Basketball",
   "Volleyball",
-  "Badminton",
-  "Table Tennis",
-  "Tennis",
-  "Hockey",
+  "Basketball",
   "Kabaddi",
-  "Kho-Kho",
-  "Athletics",
-  "Swimming",
+  "Badminton",
   "Chess",
-  "Carrom",
-  "Handball",
-  "Throwball",
+  "Kho Kho",
+  "Table Tennis",
+  "Tug of War",
+  "Cricket",
+  "Athletics",
 ];
 
 interface DepartmentPlayer {
@@ -41,6 +37,7 @@ interface DepartmentPlayer {
 
 export default function CaptainDashboardPage() {
   const { captain, logout, isLoading, token, login } = useCaptain();
+  const { showNotification, showConfirm } = useNotification();
   const navigate = useNavigate();
 
   // Edit profile state
@@ -309,7 +306,8 @@ export default function CaptainDashboardPage() {
   };
 
   const handleDeletePlayer = async (playerId: string) => {
-    if (!confirm("Are you sure you want to delete this player?")) return;
+    const confirmed = await showConfirm("Are you sure you want to delete this player?");
+    if (!confirmed) return;
 
     try {
       const response = await fetch(API_ENDPOINTS.CAPTAIN_PLAYERS_DELETE(playerId), {
@@ -324,9 +322,10 @@ export default function CaptainDashboardPage() {
         throw new Error(data.error || "Failed to delete player");
       }
 
+      showNotification("Player deleted successfully", "success");
       fetchPlayers();
     } catch (err: any) {
-      alert(err.message || "Failed to delete player");
+      showNotification(err.message || "Failed to delete player", "error");
     }
   };
 
@@ -334,25 +333,25 @@ export default function CaptainDashboardPage() {
     switch (status.toLowerCase()) {
       case "approved":
       case "active":
-        return "bg-green-100 text-green-700";
+        return "bg-emerald-100 text-emerald-700";
       case "pending":
-        return "bg-yellow-100 text-yellow-700";
+        return "bg-amber-100 text-amber-700";
       case "rejected":
         return "bg-red-100 text-red-700";
       case "inactive":
-        return "bg-gray-100 text-gray-700";
+        return "bg-slate-100 text-slate-600";
       default:
-        return "bg-slate-100 text-slate-700";
+        return "bg-slate-100 text-slate-600";
     }
   };
 
   // Show loading while checking auth state
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-50 to-indigo-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-slate-600">Loading...</p>
+          <div className="animate-spin rounded-full h-10 w-10 border-2 border-slate-300 border-t-slate-600 mx-auto mb-4"></div>
+          <p className="text-slate-500 text-sm">Loading...</p>
         </div>
       </div>
     );
@@ -360,12 +359,12 @@ export default function CaptainDashboardPage() {
 
   if (!captain) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-50 to-indigo-50">
-        <div className="text-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100">
+        <div className="text-center bg-white rounded-xl shadow-sm border border-slate-200 p-8">
           <p className="text-slate-600 mb-4">Please login to access your dashboard</p>
           <Link
             to="/captain-login"
-            className="text-indigo-600 font-semibold hover:text-indigo-700"
+            className="text-slate-700 font-medium hover:text-slate-900 underline"
           >
             Go to Login
           </Link>
@@ -375,24 +374,28 @@ export default function CaptainDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-slate-100">
+      <header className="bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 text-white shadow-md">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-3xl">👨‍✈️</span>
+            <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </div>
             <div>
-              <h1 className="text-xl font-bold text-slate-800">Captain Dashboard</h1>
-              <p className="text-sm text-slate-500">Welcome, {captain.name}</p>
+              <h1 className="text-lg font-semibold">Captain Dashboard</h1>
+              <p className="text-sm text-white/70">Welcome, {captain.name}</p>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <Link to="/" className="text-slate-500 hover:text-slate-700 text-sm">
+          <div className="flex items-center gap-3">
+            <Link to="/" className="text-white/70 hover:text-white text-sm transition-colors">
               Home
             </Link>
             <button
               onClick={handleLogout}
-              className="px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium"
+              className="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-sm font-medium transition-colors"
             >
               Logout
             </button>
@@ -401,359 +404,243 @@ export default function CaptainDashboardPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-4 py-8">
-        {/* Welcome Card */}
-        <div className="bg-linear-to-r from-indigo-500 to-purple-600 rounded-2xl p-8 text-white mb-8">
-          <h2 className="text-2xl font-bold mb-2">Hello, Captain {captain.name}! 👋</h2>
-          <p className="text-indigo-100">
-            {captain.status === "approved" || captain.status === "active"
-              ? `Manage your ${captain.department} department players and teams here.`
-              : "Your account is pending approval. Please wait for admin confirmation."}
-          </p>
-        </div>
-
-        {/* Team Management Section */}
-        {(captain.status === "approved" || captain.status === "active") && (
-          <div className="mb-8">
-            <CaptainTeamManager />
+      <main className="max-w-6xl mx-auto px-4 py-6">
+        {/* Account Status Alert (if pending) */}
+        {captain.status !== "approved" && captain.status !== "active" && (
+          <div className="mb-6 bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
+            <svg className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+              <p className="font-medium text-amber-800">Account Pending Approval</p>
+              <p className="text-sm text-amber-700">Your account is awaiting admin approval. Some features may be restricted.</p>
+            </div>
           </div>
         )}
 
-        {/* Info Cards */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Captain ID Card */}
-          <div className="bg-white rounded-2xl shadow-lg border border-slate-100 p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-indigo-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"
-                  />
-                </svg>
-              </div>
-              <div>
-                <h3 className="font-semibold text-slate-800">Captain ID</h3>
-                <p className="text-xs text-slate-500">Your unique identifier</p>
-              </div>
-            </div>
-            <div className="bg-slate-50 rounded-xl p-4">
-              <p className="text-2xl font-mono font-bold text-indigo-600 text-center">
-                {captain.uniqueId}
-              </p>
-            </div>
-          </div>
-
-          {/* Department Card */}
-          <div className="bg-white rounded-2xl shadow-lg border border-slate-100 p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-purple-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                  />
-                </svg>
-              </div>
-              <div>
-                <h3 className="font-semibold text-slate-800">Department</h3>
-                <p className="text-xs text-slate-500">Your department</p>
-              </div>
-            </div>
-            <div className="bg-slate-50 rounded-xl p-4">
-              <p className="text-lg font-bold text-purple-600 text-center">
-                {captain.department}
-              </p>
-            </div>
-          </div>
-
-          {/* Status Card */}
-          <div className="bg-white rounded-2xl shadow-lg border border-slate-100 p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <div
-                className={`w-12 h-12 rounded-xl flex items-center justify-center ${captain.status === "approved" || captain.status === "active"
-                    ? "bg-green-100"
-                    : "bg-amber-100"
-                  }`}
-              >
-                {captain.status === "approved" || captain.status === "active" ? (
-                  <svg
-                    className="w-6 h-6 text-green-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    className="w-6 h-6 text-amber-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                )}
-              </div>
-              <div>
-                <h3 className="font-semibold text-slate-800">Account Status</h3>
-                <p className="text-xs text-slate-500">Current status</p>
-              </div>
-            </div>
-            <div
-              className={`rounded-xl p-4 ${captain.status === "approved" || captain.status === "active"
-                  ? "bg-green-50"
-                  : "bg-amber-50"
-                }`}
-            >
-              <p
-                className={`text-lg font-bold text-center capitalize ${captain.status === "approved" || captain.status === "active"
-                    ? "text-green-600"
-                    : "text-amber-600"
-                  }`}
-              >
-                {captain.status}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Profile Details */}
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-100 p-6 mt-8">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-slate-800">Captain Profile</h3>
+        {/* Section 1: Captain Details */}
+        <section className="mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-slate-800">Captain Profile</h2>
             <button
               onClick={openEditModal}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium flex items-center gap-2"
+              className="px-3 py-1.5 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors text-sm font-medium flex items-center gap-1.5"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
               </svg>
-              Edit Profile
+              Edit
             </button>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div>
-              <p className="text-sm text-slate-500 mb-1">Full Name</p>
-              <p className="font-medium text-slate-800">{captain.name}</p>
+          
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200/60 overflow-hidden">
+            <div className="grid md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-slate-100">
+              {/* Captain ID */}
+              <div className="p-4 text-center">
+                <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Captain ID</p>
+                <p className="text-lg font-bold font-mono text-slate-700">{captain.uniqueId}</p>
+              </div>
+              {/* Department */}
+              <div className="p-4 text-center">
+                <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Department</p>
+                <p className="text-lg font-semibold text-slate-700">{captain.department}</p>
+              </div>
+              {/* Status */}
+              <div className="p-4 text-center">
+                <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Status</p>
+                <span className={`inline-block px-2.5 py-1 rounded-full text-sm font-medium capitalize ${getStatusColor(captain.status)}`}>
+                  {captain.status}
+                </span>
+              </div>
+              {/* Blood Group */}
+              <div className="p-4 text-center">
+                <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Blood Group</p>
+                <p className="text-lg font-semibold text-red-600">{captain.bloodGroup || "—"}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm text-slate-500 mb-1">Email</p>
-              <p className="font-medium text-slate-800">{captain.email}</p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-500 mb-1">R-Number</p>
-              <p className="font-medium text-slate-800">{captain.rNumber}</p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-500 mb-1">Phone</p>
-              <p className="font-medium text-slate-800">{captain.phone}</p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-500 mb-1">Blood Group</p>
-              <p className="font-medium text-slate-800">{captain.bloodGroup}</p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-500 mb-1">Department</p>
-              <p className="font-medium text-slate-800">{captain.department}</p>
+            
+            <div className="border-t border-slate-100 p-4">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                  <p className="text-xs font-medium text-slate-500 mb-0.5">Full Name</p>
+                  <p className="text-sm font-medium text-slate-800">{captain.name}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-slate-500 mb-0.5">Email</p>
+                  <p className="text-sm text-slate-700">{captain.email}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-slate-500 mb-0.5">R-Number</p>
+                  <p className="text-sm font-mono text-slate-700">{captain.rNumber}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-slate-500 mb-0.5">Phone</p>
+                  <p className="text-sm text-slate-700">{captain.phone}</p>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Department Players Section */}
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-100 p-6 mt-8">
-          <div className="flex items-center justify-between mb-6">
+        {/* Section 2: Department Players */}
+        <section className="mb-6">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-lg font-semibold text-slate-800">Department Players</h3>
-              <p className="text-sm text-slate-500">
-                Manage players from your department (max 2 sports per player)
-              </p>
+              <h2 className="text-lg font-semibold text-slate-800">Department Players</h2>
+              <p className="text-sm text-slate-500">Manage players from your department (max 2 sports per player)</p>
             </div>
             <button
               onClick={openAddPlayerModal}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium flex items-center gap-2"
+              className="px-3 py-1.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium flex items-center gap-1.5"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
               Add Player
             </button>
           </div>
 
-          {playersLoading ? (
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto mb-2"></div>
-              <p className="text-slate-500">Loading players...</p>
-            </div>
-          ) : players.length === 0 ? (
-            <div className="text-center py-8 bg-slate-50 rounded-xl">
-              <div className="text-4xl mb-2">👥</div>
-              <p className="text-slate-600">No players added yet</p>
-              <p className="text-sm text-slate-500 mt-1">
-                Click "Add Player" to add players from your department
-              </p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-slate-50">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
-                      Name
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
-                      R-Number
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
-                      Player ID
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
-                      Contact
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
-                      Sport
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
-                      Status
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {players.map((player) => (
-                    <tr key={player._id} className="hover:bg-slate-50">
-                      <td className="px-4 py-3">
-                        <div className="font-medium text-slate-800">{player.name}</div>
-                        <div className="text-xs text-slate-500">{player.email}</div>
-                      </td>
-                      <td className="px-4 py-3 text-sm font-mono text-slate-600">
-                        {player.rNumber}
-                      </td>
-                      <td className="px-4 py-3 text-sm font-mono font-bold text-indigo-600">
-                        {player.uniqueId}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-slate-600">{player.phone}</td>
-                      <td className="px-4 py-3">
-                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium">
-                          {player.sport}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span
-                          className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(
-                            player.status
-                          )}`}
-                        >
-                          {player.status}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => openEditPlayerModal(player)}
-                            className="text-blue-600 hover:text-blue-700"
-                            title="Edit"
-                          >
-                            ✏️
-                          </button>
-                          <button
-                            onClick={() => handleDeletePlayer(player._id)}
-                            className="text-red-600 hover:text-red-700"
-                            title="Delete"
-                          >
-                            🗑️
-                          </button>
-                        </div>
-                      </td>
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200/60 overflow-hidden">
+            {playersLoading ? (
+              <div className="text-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-2 border-slate-300 border-t-slate-600 mx-auto mb-3"></div>
+                <p className="text-slate-500 text-sm">Loading players...</p>
+              </div>
+            ) : players.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <svg className="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
+                <p className="text-slate-600 font-medium">No players added yet</p>
+                <p className="text-sm text-slate-500 mt-1">Click "Add Player" to add players from your department</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-slate-50 border-b border-slate-100">
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Player</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">R-Number</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Player ID</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Contact</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Sport</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Status</th>
+                      <th className="px-4 py-3 text-center text-xs font-semibold text-slate-600 uppercase tracking-wider">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-        
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {players.map((player) => (
+                      <tr key={player._id} className="hover:bg-slate-50/50 transition-colors">
+                        <td className="px-4 py-3">
+                          <div className="font-medium text-slate-800 text-sm">{player.name}</div>
+                          <div className="text-xs text-slate-500">{player.email}</div>
+                        </td>
+                        <td className="px-4 py-3 text-sm font-mono text-slate-600">{player.rNumber}</td>
+                        <td className="px-4 py-3 text-sm font-mono font-semibold text-slate-700">{player.uniqueId}</td>
+                        <td className="px-4 py-3 text-sm text-slate-600">{player.phone}</td>
+                        <td className="px-4 py-3">
+                          <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-medium">{player.sport}</span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className={`px-2 py-0.5 rounded text-xs font-medium ${getStatusColor(player.status)}`}>
+                            {player.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center justify-center gap-1">
+                            <button
+                              onClick={() => openEditPlayerModal(player)}
+                              className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                              title="Edit"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                              </svg>
+                            </button>
+                            <button
+                              onClick={() => handleDeletePlayer(player._id)}
+                              className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                              title="Delete"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Section 3: Team Management */}
+        {(captain.status === "approved" || captain.status === "active") && (
+          <section className="mb-6">
+            <CaptainTeamManager />
+          </section>
+        )}
+
         {/* Quick Links */}
-        <div className="grid md:grid-cols-2 gap-4 mt-8">
-          <Link
-            to="/schedule"
-            className="bg-white rounded-xl p-4 border border-slate-100 hover:shadow-lg transition-all flex items-center gap-3"
-          >
-            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-              📅
-            </div>
-            <div>
-              <p className="font-medium text-slate-800">Match Schedule</p>
-              <p className="text-xs text-slate-500">View upcoming matches</p>
-            </div>
-          </Link>
-          <Link
-            to="/scores"
-            className="bg-white rounded-xl p-4 border border-slate-100 hover:shadow-lg transition-all flex items-center gap-3"
-          >
-            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-              🏆
-            </div>
-            <div>
-              <p className="font-medium text-slate-800">Scores</p>
-              <p className="text-xs text-slate-500">Check match results</p>
-            </div>
-          </Link>
-        </div>
+        <section>
+          <h2 className="text-lg font-semibold text-slate-800 mb-4">Quick Links</h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Link
+              to="/schedule"
+              className="bg-white rounded-xl p-4 border border-slate-200/60 hover:border-slate-300 hover:shadow-sm transition-all flex items-center gap-3 group"
+            >
+              <div className="w-10 h-10 bg-slate-100 group-hover:bg-slate-200 rounded-lg flex items-center justify-center transition-colors">
+                <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-medium text-slate-800">Match Schedule</p>
+                <p className="text-xs text-slate-500">View upcoming matches</p>
+              </div>
+            </Link>
+            <Link
+              to="/scores"
+              className="bg-white rounded-xl p-4 border border-slate-200/60 hover:border-slate-300 hover:shadow-sm transition-all flex items-center gap-3 group"
+            >
+              <div className="w-10 h-10 bg-slate-100 group-hover:bg-slate-200 rounded-lg flex items-center justify-center transition-colors">
+                <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-medium text-slate-800">Match Scores</p>
+                <p className="text-xs text-slate-500">Check match results</p>
+              </div>
+            </Link>
+          </div>
+        </section>
       </main>
 
       {/* Edit Profile Modal */}
       {isEditing && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-slate-800">Edit Profile</h2>
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="p-5 border-b border-slate-100">
+              <div className="flex justify-between items-center">
+                <h2 className="text-lg font-semibold text-slate-800">Edit Profile</h2>
                 <button
                   onClick={closeEditModal}
-                  className="text-slate-400 hover:text-slate-600 text-2xl"
+                  className="p-1 text-slate-400 hover:text-slate-600 rounded"
                 >
-                  ×
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
                 </button>
               </div>
+            </div>
 
+            <div className="p-5">
               {editError && (
                 <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
                   {editError}
@@ -761,13 +648,9 @@ export default function CaptainDashboardPage() {
               )}
 
               {editSuccess && (
-                <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-600 text-sm flex items-center gap-2">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clipRule="evenodd"
-                    />
+                <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-600 text-sm flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                   {editSuccess}
                 </div>
@@ -775,55 +658,47 @@ export default function CaptainDashboardPage() {
 
               <form onSubmit={handleEditSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Full Name
-                  </label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
                   <input
                     type="text"
                     name="name"
                     value={editForm.name}
                     onChange={handleEditChange}
                     required
-                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Phone Number
-                  </label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Phone Number</label>
                   <input
                     type="tel"
                     name="phone"
                     value={editForm.phone}
                     onChange={handleEditChange}
                     required
-                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Blood Group
-                  </label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Blood Group</label>
                   <select
                     name="bloodGroup"
                     value={editForm.bloodGroup}
                     onChange={handleEditChange}
                     required
-                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent text-sm"
                   >
                     <option value="">Select Blood Group</option>
                     {BLOOD_GROUPS.map((bg) => (
-                      <option key={bg} value={bg}>
-                        {bg}
-                      </option>
+                      <option key={bg} value={bg}>{bg}</option>
                     ))}
                   </select>
                 </div>
 
                 <div className="bg-slate-50 rounded-lg p-3 text-sm text-slate-500">
-                  <p className="font-medium text-slate-700 mb-1">Note:</p>
+                  <p className="font-medium text-slate-600 mb-1">Note:</p>
                   <p>Email, R-Number, Department, and Captain ID cannot be changed.</p>
                 </div>
 
@@ -831,14 +706,14 @@ export default function CaptainDashboardPage() {
                   <button
                     type="button"
                     onClick={closeEditModal}
-                    className="flex-1 px-4 py-2.5 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 font-medium"
+                    className="flex-1 px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 font-medium text-sm"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={editLoading}
-                    className="flex-1 px-4 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {editLoading ? "Saving..." : "Save Changes"}
                   </button>
@@ -851,19 +726,23 @@ export default function CaptainDashboardPage() {
 
       {/* Add Player Modal */}
       {showAddPlayer && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-slate-800">Add New Player</h2>
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="p-5 border-b border-slate-100">
+              <div className="flex justify-between items-center">
+                <h2 className="text-lg font-semibold text-slate-800">Add New Player</h2>
                 <button
                   onClick={closeAddPlayerModal}
-                  className="text-slate-400 hover:text-slate-600 text-2xl"
+                  className="p-1 text-slate-400 hover:text-slate-600 rounded"
                 >
-                  ×
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
                 </button>
               </div>
+            </div>
 
+            <div className="p-5">
               {addPlayerError && (
                 <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
                   {addPlayerError}
@@ -871,16 +750,14 @@ export default function CaptainDashboardPage() {
               )}
 
               {addPlayerSuccess && (
-                <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-600 text-sm">
+                <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-600 text-sm">
                   {addPlayerSuccess}
                 </div>
               )}
 
               <form onSubmit={handleAddPlayerSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Player Name *
-                  </label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Player Name *</label>
                   <input
                     type="text"
                     name="name"
@@ -888,14 +765,12 @@ export default function CaptainDashboardPage() {
                     onChange={handleAddPlayerChange}
                     required
                     placeholder="Enter player's full name"
-                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Player R-Number *
-                  </label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Player R-Number *</label>
                   <input
                     type="text"
                     name="rNumber"
@@ -903,14 +778,12 @@ export default function CaptainDashboardPage() {
                     onChange={handleAddPlayerChange}
                     required
                     placeholder="e.g., R2021001"
-                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Contact Number *
-                  </label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Contact Number *</label>
                   <input
                     type="tel"
                     name="phone"
@@ -918,14 +791,12 @@ export default function CaptainDashboardPage() {
                     onChange={handleAddPlayerChange}
                     required
                     placeholder="Enter phone number"
-                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Player Email *
-                  </label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Player Email *</label>
                   <input
                     type="email"
                     name="email"
@@ -933,50 +804,43 @@ export default function CaptainDashboardPage() {
                     onChange={handleAddPlayerChange}
                     required
                     placeholder="player@email.com"
-                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Sport *
-                  </label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Sport *</label>
                   <select
                     name="sport"
                     value={addPlayerForm.sport}
                     onChange={handleAddPlayerChange}
                     required
-                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-sm"
                   >
                     <option value="">Select Sport</option>
                     {SPORTS_LIST.map((sport) => (
-                      <option key={sport} value={sport}>
-                        {sport}
-                      </option>
+                      <option key={sport} value={sport}>{sport}</option>
                     ))}
                   </select>
                 </div>
 
-                <div className="bg-amber-50 rounded-lg p-3 text-sm text-amber-700">
-                  <p className="font-medium mb-1">⚠️ Note:</p>
-                  <p>
-                    A player can participate in maximum 2 sports. The same R-Number can be
-                    registered for different sports.
-                  </p>
+                <div className="bg-amber-50 rounded-lg p-3 text-sm text-amber-700 border border-amber-200">
+                  <p className="font-medium mb-1">Note:</p>
+                  <p>A player can participate in maximum 2 sports. The same R-Number can be registered for different sports.</p>
                 </div>
 
                 <div className="flex gap-3 pt-2">
                   <button
                     type="button"
                     onClick={closeAddPlayerModal}
-                    className="flex-1 px-4 py-2.5 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 font-medium"
+                    className="flex-1 px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 font-medium text-sm"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={addPlayerLoading}
-                    className="flex-1 px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {addPlayerLoading ? "Adding..." : "Add Player"}
                   </button>
@@ -989,19 +853,23 @@ export default function CaptainDashboardPage() {
 
       {/* Edit Player Modal */}
       {editingPlayer && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-slate-800">Edit Player</h2>
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="p-5 border-b border-slate-100">
+              <div className="flex justify-between items-center">
+                <h2 className="text-lg font-semibold text-slate-800">Edit Player</h2>
                 <button
                   onClick={closeEditPlayerModal}
-                  className="text-slate-400 hover:text-slate-600 text-2xl"
+                  className="p-1 text-slate-400 hover:text-slate-600 rounded"
                 >
-                  ×
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
                 </button>
               </div>
+            </div>
 
+            <div className="p-5">
               {editPlayerError && (
                 <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
                   {editPlayerError}
@@ -1010,66 +878,71 @@ export default function CaptainDashboardPage() {
 
               <form onSubmit={handleEditPlayerSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Player Name
-                  </label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Player Name</label>
                   <input
                     type="text"
                     name="name"
                     value={editPlayerForm.name}
                     onChange={handleEditPlayerChange}
                     required
-                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Contact Number
-                  </label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Contact Number</label>
                   <input
                     type="tel"
                     name="phone"
                     value={editPlayerForm.phone}
                     onChange={handleEditPlayerChange}
                     required
-                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Email
-                  </label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
                   <input
                     type="email"
                     name="email"
                     value={editPlayerForm.email}
                     onChange={handleEditPlayerChange}
                     required
-                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent text-sm"
                   />
                 </div>
 
-                <div className="bg-slate-50 rounded-lg p-3 text-sm text-slate-500">
+                <div className="bg-slate-50 rounded-lg p-3 text-sm text-slate-600 border border-slate-200">
                   <p className="font-medium text-slate-700 mb-1">Player Info:</p>
-                  <p>R-Number: {editingPlayer.rNumber}</p>
-                  <p>Player ID: {editingPlayer.uniqueId}</p>
-                  <p>Sport: {editingPlayer.sport}</p>
+                  <div className="grid grid-cols-3 gap-2 text-xs">
+                    <div>
+                      <span className="text-slate-500">R-Number:</span>
+                      <p className="font-mono">{editingPlayer.rNumber}</p>
+                    </div>
+                    <div>
+                      <span className="text-slate-500">Player ID:</span>
+                      <p className="font-mono">{editingPlayer.uniqueId}</p>
+                    </div>
+                    <div>
+                      <span className="text-slate-500">Sport:</span>
+                      <p>{editingPlayer.sport}</p>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="flex gap-3 pt-2">
                   <button
                     type="button"
                     onClick={closeEditPlayerModal}
-                    className="flex-1 px-4 py-2.5 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 font-medium"
+                    className="flex-1 px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 font-medium text-sm"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={editPlayerLoading}
-                    className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {editPlayerLoading ? "Saving..." : "Save Changes"}
                   </button>

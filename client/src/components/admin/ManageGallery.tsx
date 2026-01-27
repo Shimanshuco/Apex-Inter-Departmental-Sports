@@ -23,7 +23,8 @@ const CATEGORY_OPTIONS = [
   "Kho Kho",
   "Table Tennis",
   "Tug of War",
-  "Sack Race",
+  "Cricket",
+  "Athletics",
   "Events",
   "Celebrations",
   "Other",
@@ -124,30 +125,31 @@ export default function ManageGallery({ refreshKey }: ManageGalleryProps) {
   });
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
-      <div className="border-b px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
-        <h2 className="text-lg sm:text-xl font-extrabold text-slate-900">Manage Gallery</h2>
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="border-b border-slate-200 px-4 sm:px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
+        <h2 className="text-lg sm:text-xl font-semibold text-slate-800">Manage Gallery</h2>
         <button
           onClick={() => setIsAddModalOpen(true)}
-          className="w-full sm:w-auto px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-sm"
+          className="w-full sm:w-auto px-4 py-2.5 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-all font-medium text-sm flex items-center justify-center gap-2 shadow-sm"
         >
-          + Add Photo
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+          Add Photo
         </button>
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="border-b px-3 sm:px-6 py-3 sm:py-4 bg-slate-50 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-4">
+      <div className="border-b border-slate-200 px-3 sm:px-6 py-4 bg-slate-50 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-4">
         <input
           type="text"
           placeholder="Search by title or description..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="px-3 sm:px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:min-w-[200px] sm:w-auto"
+          className="px-3 sm:px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 w-full sm:min-w-[200px] sm:w-auto bg-white"
         />
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
-          className="px-3 sm:px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none w-full sm:w-auto"
+          className="px-3 sm:px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none w-full sm:w-auto bg-white"
         >
           {categories.map((cat) => (
             <option key={cat} value={cat}>
@@ -182,9 +184,9 @@ export default function ManageGallery({ refreshKey }: ManageGalleryProps) {
               )}
               <button
                 onClick={() => handleDelete(item._id)}
-                className="mt-2 sm:mt-3 w-full text-xs sm:text-sm text-red-600 hover:text-red-700 font-semibold px-2 py-1 bg-red-50 rounded"
+                className="mt-2 sm:mt-3 w-full text-xs sm:text-sm text-red-600 hover:text-red-700 font-medium px-2 py-1.5 bg-red-50 hover:bg-red-100 rounded transition-colors"
               >
-                🗑️ Delete
+                Delete
               </button>
             </div>
           </div>

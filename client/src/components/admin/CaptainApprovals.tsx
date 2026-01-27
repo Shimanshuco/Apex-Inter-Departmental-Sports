@@ -432,12 +432,12 @@ export default function CaptainApprovals({ refreshKey }: CaptainApprovalsProps) 
   return (
     <div className="space-y-4">
       {/* Verification Search Section */}
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4">
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            🔐 Verification Center
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-gradient-to-r from-slate-600 to-slate-700 px-6 py-4">
+          <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+            Verification Center
           </h2>
-          <p className="text-indigo-100 text-sm mt-1">
+          <p className="text-slate-300 text-sm mt-1">
             Verify captain or player registration by R-Number or Unique ID
           </p>
         </div>
@@ -445,32 +445,32 @@ export default function CaptainApprovals({ refreshKey }: CaptainApprovalsProps) 
         <div className="p-6">
           {/* Verification Type Toggle */}
           <div className="flex flex-wrap gap-3 mb-5">
-            <div className="flex rounded-xl overflow-hidden border-2 border-indigo-200">
+            <div className="flex rounded-lg overflow-hidden border border-slate-200">
               <button
                 onClick={() => {
                   setVerifyType("captain");
                   clearVerifySearch();
                 }}
-                className={`px-5 py-2.5 font-semibold text-sm transition-all ${
+                className={`px-5 py-2.5 font-medium text-sm transition-all ${
                   verifyType === "captain"
-                    ? "bg-amber-500 text-white"
+                    ? "bg-slate-600 text-white"
                     : "bg-white text-slate-600 hover:bg-slate-50"
                 }`}
               >
-                🎖️ Verify Captain
+                Verify Captain
               </button>
               <button
                 onClick={() => {
                   setVerifyType("player");
                   clearVerifySearch();
                 }}
-                className={`px-5 py-2.5 font-semibold text-sm transition-all ${
+                className={`px-5 py-2.5 font-medium text-sm transition-all ${
                   verifyType === "player"
-                    ? "bg-blue-500 text-white"
+                    ? "bg-slate-600 text-white"
                     : "bg-white text-slate-600 hover:bg-slate-50"
                 }`}
               >
-                ⚽ Verify Player
+                Verify Player
               </button>
             </div>
           </div>
@@ -479,8 +479,8 @@ export default function CaptainApprovals({ refreshKey }: CaptainApprovalsProps) 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             {/* R-Number Input */}
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">
-                📝 R-Number <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                R-Number <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -488,14 +488,14 @@ export default function CaptainApprovals({ refreshKey }: CaptainApprovalsProps) 
                 onChange={(e) => setVerifyRNumber(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && handleVerifySearch()}
                 placeholder={`Enter ${verifyType === "captain" ? "Captain's" : "Player's"} R-Number (e.g., R12345)`}
-                className="w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-slate-200 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent"
               />
             </div>
 
             {/* Unique ID Input */}
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">
-                🆔 {verifyType === "captain" ? "Captain ID" : "Player ID"} <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                {verifyType === "captain" ? "Captain ID" : "Player ID"} <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -503,7 +503,7 @@ export default function CaptainApprovals({ refreshKey }: CaptainApprovalsProps) 
                 onChange={(e) => setVerifyUniqueId(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && handleVerifySearch()}
                 placeholder={verifyType === "captain" ? "Enter Captain ID (e.g., CPT-1234)" : "Enter Player ID (e.g., PLY-1234)"}
-                className="w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-slate-200 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent"
               />
             </div>
           </div>
@@ -513,29 +513,27 @@ export default function CaptainApprovals({ refreshKey }: CaptainApprovalsProps) 
             <button
               onClick={handleVerifySearch}
               disabled={verifyLoading || !verifyRNumber.trim() || !verifyUniqueId.trim()}
-              className="px-8 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl font-semibold text-base disabled:opacity-50 transition-all shadow-lg shadow-indigo-200 flex items-center justify-center gap-2"
+              className="px-6 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-medium text-sm disabled:opacity-50 transition-all shadow-sm flex items-center justify-center gap-2"
             >
               {verifyLoading ? (
-                <>
-                  <span className="animate-spin">⏳</span> Verifying...
-                </>
+                <>Verifying...</>
               ) : (
-                <>🔐 Verify Identity</>
+                <>Verify Identity</>
               )}
             </button>
             {(verifyRNumber || verifyUniqueId || verifyResult || verifyError) && (
               <button
                 onClick={clearVerifySearch}
-                className="px-6 py-3.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-medium transition-colors"
+                className="px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-medium transition-colors"
               >
-                🗑️ Clear
+                Clear
               </button>
             )}
           </div>
 
           {/* Info Text */}
           <p className="text-slate-500 text-sm mt-3">
-            ℹ️ Both R-Number and {verifyType === "captain" ? "Captain ID" : "Player ID"} must match the same record for successful verification
+            Both R-Number and {verifyType === "captain" ? "Captain ID" : "Player ID"} must match the same record for successful verification
           </p>
 
           {/* Error Message */}
@@ -684,54 +682,54 @@ export default function CaptainApprovals({ refreshKey }: CaptainApprovalsProps) 
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl p-4 text-white shadow-lg">
+        <div className="bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl p-4 text-white shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-amber-100 text-sm font-medium">Pending Captains</p>
+              <p className="text-slate-200 text-sm font-medium">Pending Captains</p>
               <p className="text-3xl font-bold mt-1">{pendingCaptainsCount}</p>
             </div>
-            <div className="text-4xl opacity-80">🎖️</div>
+            <svg className="w-10 h-10 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
           </div>
         </div>
-        <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl p-4 text-white shadow-lg">
+        <div className="bg-gradient-to-br from-slate-600 to-slate-700 rounded-xl p-4 text-white shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-blue-100 text-sm font-medium">Pending Players</p>
+              <p className="text-slate-200 text-sm font-medium">Pending Players</p>
               <p className="text-3xl font-bold mt-1">{pendingPlayersCount}</p>
             </div>
-            <div className="text-4xl opacity-80">⚽</div>
+            <svg className="w-10 h-10 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
           </div>
         </div>
-        <div className="bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl p-4 text-white shadow-lg">
+        <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl p-4 text-white shadow-sm">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-emerald-100 text-sm font-medium">Total Pending</p>
               <p className="text-3xl font-bold mt-1">{pendingCaptainsCount + pendingPlayersCount}</p>
             </div>
-            <div className="text-4xl opacity-80">📋</div>
+            <svg className="w-10 h-10 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
           </div>
         </div>
-        <div className="bg-gradient-to-br from-purple-500 to-violet-600 rounded-xl p-4 text-white shadow-lg">
+        <div className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl p-4 text-white shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-purple-100 text-sm font-medium">Departments</p>
+              <p className="text-amber-100 text-sm font-medium">Departments</p>
               <p className="text-3xl font-bold mt-1">
                 {new Set([...pendingCaptains.map((c) => c.department), ...pendingPlayers.map((p) => p.department)]).size}
               </p>
             </div>
-            <div className="text-4xl opacity-80">🏢</div>
+            <svg className="w-10 h-10 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         {/* Header with Tabs */}
-        <div className="border-b bg-gradient-to-r from-slate-50 to-slate-100 px-4 sm:px-6 py-4">
+        <div className="border-b border-slate-200 bg-slate-50 px-4 sm:px-6 py-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                ✅ Verification Center
+              <h2 className="text-xl font-semibold text-slate-800 flex items-center gap-2">
+                Approval Center
               </h2>
               <p className="text-sm text-slate-500 mt-1">
                 Review and approve captain & player registrations
@@ -744,15 +742,15 @@ export default function CaptainApprovals({ refreshKey }: CaptainApprovalsProps) 
                   setSearchQuery("");
                   setSelectedDepartment("All");
                 }}
-                className={`px-4 py-2.5 rounded-xl font-semibold text-sm transition-all flex items-center gap-2 ${
+                className={`px-4 py-2.5 rounded-lg font-medium text-sm transition-all flex items-center gap-2 ${
                   activeTab === "captains"
-                    ? "bg-amber-500 text-white shadow-lg shadow-amber-200"
-                    : "bg-white text-slate-700 hover:bg-slate-50 border border-slate-200"
+                    ? "bg-slate-700 text-white shadow-md"
+                    : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
                 }`}
               >
-                🎖️ Captains
+                Captains
                 {pendingCaptainsCount > 0 && (
-                  <span className={`px-2 py-0.5 text-xs rounded-full font-bold ${
+                  <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${
                     activeTab === "captains" ? "bg-white/20" : "bg-red-500 text-white"
                   }`}>
                     {pendingCaptainsCount}
@@ -766,15 +764,15 @@ export default function CaptainApprovals({ refreshKey }: CaptainApprovalsProps) 
                   setSelectedDepartment("All");
                   setSelectedSport("All");
                 }}
-                className={`px-4 py-2.5 rounded-xl font-semibold text-sm transition-all flex items-center gap-2 ${
+                className={`px-4 py-2.5 rounded-lg font-medium text-sm transition-all flex items-center gap-2 ${
                   activeTab === "players"
-                    ? "bg-blue-500 text-white shadow-lg shadow-blue-200"
-                    : "bg-white text-slate-700 hover:bg-slate-50 border border-slate-200"
+                    ? "bg-slate-700 text-white shadow-md"
+                    : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
                 }`}
               >
-                ⚽ Players
+                Players
                 {pendingPlayersCount > 0 && (
-                  <span className={`px-2 py-0.5 text-xs rounded-full font-bold ${
+                  <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${
                     activeTab === "players" ? "bg-white/20" : "bg-red-500 text-white"
                   }`}>
                     {pendingPlayersCount}
@@ -786,21 +784,21 @@ export default function CaptainApprovals({ refreshKey }: CaptainApprovalsProps) 
         </div>
 
         {/* Filter Bar */}
-        <div className="border-b px-4 sm:px-6 py-3 bg-slate-50 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3">
+        <div className="border-b border-slate-200 px-4 sm:px-6 py-3 bg-slate-50 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3">
           <div className="relative flex-1 min-w-[200px]">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             <input
               type="text"
               placeholder={activeTab === "captains" ? "Search captains..." : "Search players..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent bg-white"
             />
           </div>
           <select
             value={selectedDepartment}
             onChange={(e) => setSelectedDepartment(e.target.value)}
-            className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            className="px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 bg-white"
           >
             <option value="All">All Departments</option>
             {DEPARTMENTS.map((dept) => (
@@ -811,7 +809,7 @@ export default function CaptainApprovals({ refreshKey }: CaptainApprovalsProps) 
             <select
               value={selectedSport}
               onChange={(e) => setSelectedSport(e.target.value)}
-              className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              className="px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 bg-white"
             >
               <option value="All">All Sports</option>
               {SPORTS_LIST.map((sport) => (
@@ -823,30 +821,30 @@ export default function CaptainApprovals({ refreshKey }: CaptainApprovalsProps) 
             onClick={fetchPendingItems}
             className="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
           >
-            🔄 Refresh
+            Refresh
           </button>
         </div>
 
         {/* Bulk Actions Bar */}
         {activeTab === "captains" && selectedCaptainIds.length > 0 && (
-          <div className="border-b px-4 sm:px-6 py-3 bg-amber-50 flex flex-wrap items-center gap-3">
-            <span className="text-sm font-medium text-amber-800">
+          <div className="border-b border-slate-200 px-4 sm:px-6 py-3 bg-slate-100 flex flex-wrap items-center gap-3">
+            <span className="text-sm font-medium text-slate-700">
               {selectedCaptainIds.length} captain(s) selected
             </span>
             <div className="flex gap-2 ml-auto">
               <button
                 onClick={() => handleBulkCaptainAction("approved")}
                 disabled={processingIds.length > 0}
-                className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-semibold disabled:opacity-50 flex items-center gap-2"
+                className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-sm font-medium disabled:opacity-50 flex items-center gap-2"
               >
-                ✓ Approve All
+                Approve All
               </button>
               <button
                 onClick={() => handleBulkCaptainAction("rejected")}
                 disabled={processingIds.length > 0}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-semibold disabled:opacity-50 flex items-center gap-2"
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium disabled:opacity-50 flex items-center gap-2"
               >
-                ✕ Reject All
+                Reject All
               </button>
               <button
                 onClick={() => setSelectedCaptainIds([])}
@@ -859,24 +857,24 @@ export default function CaptainApprovals({ refreshKey }: CaptainApprovalsProps) 
         )}
 
         {activeTab === "players" && selectedPlayerIds.length > 0 && (
-          <div className="border-b px-4 sm:px-6 py-3 bg-blue-50 flex flex-wrap items-center gap-3">
-            <span className="text-sm font-medium text-blue-800">
+          <div className="border-b border-slate-200 px-4 sm:px-6 py-3 bg-slate-100 flex flex-wrap items-center gap-3">
+            <span className="text-sm font-medium text-slate-700">
               {selectedPlayerIds.length} player(s) selected
             </span>
             <div className="flex gap-2 ml-auto">
               <button
                 onClick={() => handleBulkPlayerAction("approved")}
                 disabled={processingIds.length > 0}
-                className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-semibold disabled:opacity-50 flex items-center gap-2"
+                className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-sm font-medium disabled:opacity-50 flex items-center gap-2"
               >
-                ✓ Approve All
+                Approve All
               </button>
               <button
                 onClick={() => handleBulkPlayerAction("rejected")}
                 disabled={processingIds.length > 0}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-semibold disabled:opacity-50 flex items-center gap-2"
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium disabled:opacity-50 flex items-center gap-2"
               >
-                ✕ Reject All
+                Reject All
               </button>
               <button
                 onClick={() => setSelectedPlayerIds([])}
@@ -890,7 +888,7 @@ export default function CaptainApprovals({ refreshKey }: CaptainApprovalsProps) 
 
         {loading && (
           <div className="p-12 text-center">
-            <div className="inline-block animate-spin text-4xl mb-4">⏳</div>
+            <div className="inline-block animate-spin w-8 h-8 border-3 border-slate-300 border-t-slate-600 rounded-full mb-4"></div>
             <p className="text-slate-500">Loading pending approvals...</p>
           </div>
         )}

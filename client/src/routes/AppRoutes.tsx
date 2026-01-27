@@ -3,7 +3,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "../pages/HomePage";
 import ScoresPage from "../pages/ScoresPage";
 import SchedulePage from "../pages/SchedulePage";
-import LiveScorePage from "../pages/LiveScorePage";
 import GalleryPage from "../pages/GalleryPage";
 import AdminPage from "../pages/AdminPage";
 import AdminLoginPage from "../pages/AdminLoginPage";
@@ -21,7 +20,6 @@ export default function AppRoutes() {
       <Route path="/" element={<HomePage />} />
       <Route path="/scores" element={<ScoresPage />} />
       <Route path="/schedule" element={<SchedulePage />} />
-      <Route path="/live" element={<LiveScorePage />} />
       <Route path="/gallery" element={<GalleryPage />} />
       <Route path="/rules" element={<RulesPage />} />
 

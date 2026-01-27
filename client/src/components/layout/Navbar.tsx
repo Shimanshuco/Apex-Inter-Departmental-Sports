@@ -35,8 +35,8 @@ export default function Navbar() {
               <div className="text-xs sm:text-sm font-semibold text-slate-500">
                 Apex University
               </div>
-              <div className="text-lg sm:text-2xl font-extrabold tracking-wide text-slate-900">
-                SPORTS
+              <div className="text-sm sm:text-lg font-bold tracking-wide text-slate-800">
+                SPORTS FIESTA 2026 
               </div>
             </div>
           </NavLink>
@@ -85,19 +85,19 @@ export default function Navbar() {
                 </span>
                 <button
                   onClick={adminLogout}
-                  className="px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg text-xs sm:text-sm font-semibold hover:bg-red-700 transition-colors"
+                  className="px-3 sm:px-4 py-2 bg-red-500 text-white rounded-lg text-xs sm:text-sm font-semibold hover:bg-red-600 transition-colors"
                 >
                   Logout
                 </button>
               </div>
             ) : isCaptainAuth ? (
               <div className="hidden sm:flex items-center gap-3">
-                <span className="text-sm font-semibold text-emerald-700">
-                  🎖️ {captain?.name}
+                <span className="text-sm font-semibold text-emerald-600">
+                  {captain?.name}
                 </span>
                 <button
                   onClick={captainLogout}
-                  className="px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg text-xs sm:text-sm font-semibold hover:bg-red-700 transition-colors"
+                  className="px-3 sm:px-4 py-2 bg-red-500 text-white rounded-lg text-xs sm:text-sm font-semibold hover:bg-red-600 transition-colors"
                 >
                   Logout
                 </button>
@@ -108,16 +108,16 @@ export default function Navbar() {
                   to="/captain-register"
                   fullWidth={false}
                   variant="secondary"
-                  className="text-xs sm:text-sm px-3 sm:px-4"
+                  className="text-xs sm:text-sm px-3 sm:px-4 bg-emerald-500 hover:bg-emerald-600 text-white"
                 >
-                  Register
+                  Captain Register
                 </Button>
 
                 <Button
                   to="/captain-login"
                   fullWidth={false}
-                  variant="primary"
-                  className="text-xs sm:text-sm px-3 sm:px-4"
+                  variant="secondary"
+                  className="text-xs sm:text-sm px-3 sm:px-4 bg-emerald-500 hover:bg-emerald-600 text-white"
                 >
                   Captain Login
                 </Button>
@@ -125,19 +125,9 @@ export default function Navbar() {
                 <Button
                   to="/admin-login"
                   fullWidth={false}
-                  className="text-xs sm:text-sm px-3 sm:px-4 bg-slate-700 hover:bg-slate-800 text-white"
+                  className="text-xs sm:text-sm px-3 sm:px-4 bg-slate-600 hover:bg-slate-700 text-white"
                 >
                   Admin Login
-                </Button>
-
-                <Button
-                  to="/live"
-                  fullWidth={false}
-                  variant="danger"
-                  className="inline-flex items-center gap-2 text-xs sm:text-sm px-3 sm:px-4"
-                >
-                  <span className="inline-block h-2 w-2 rounded-full bg-white" />
-                  Live
                 </Button>
               </div>
             )}
@@ -170,7 +160,7 @@ export default function Navbar() {
               to="/"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              🏠 Home
+              Home
             </NavLink>
 
             <NavLink 
@@ -178,7 +168,7 @@ export default function Navbar() {
               to="/scores"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              🏆 Scores
+              Scores
             </NavLink>
 
             <NavLink 
@@ -186,7 +176,7 @@ export default function Navbar() {
               to="/schedule"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              📅 Schedule
+              Schedule
             </NavLink>
 
             <NavLink 
@@ -194,7 +184,7 @@ export default function Navbar() {
               to="/gallery"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              📸 Gallery
+              Gallery
             </NavLink>
 
             <NavLink 
@@ -202,7 +192,7 @@ export default function Navbar() {
               to="/rules"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              📖 Rules
+              Rules
             </NavLink>
 
             {isAdminAuth && (
@@ -211,7 +201,7 @@ export default function Navbar() {
                 to="/admin"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                ⚙️ Admin
+                Admin Panel
               </NavLink>
             )}
 
@@ -221,7 +211,7 @@ export default function Navbar() {
                 to="/captain-dashboard"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                🎖️ My Dashboard
+                My Dashboard
               </NavLink>
             )}
 
@@ -233,7 +223,7 @@ export default function Navbar() {
                   adminLogout();
                   setIsMobileMenuOpen(false);
                 }}
-                className="px-4 py-3 bg-red-600 text-white rounded-lg font-semibold text-center"
+                className="px-4 py-3 bg-red-500 text-white rounded-lg font-semibold text-center"
               >
                 Logout ({admin?.username})
               </button>
@@ -243,7 +233,7 @@ export default function Navbar() {
                   captainLogout();
                   setIsMobileMenuOpen(false);
                 }}
-                className="px-4 py-3 bg-red-600 text-white rounded-lg font-semibold text-center"
+                className="px-4 py-3 bg-red-500 text-white rounded-lg font-semibold text-center"
               >
                 Logout ({captain?.name})
               </button>
@@ -252,31 +242,23 @@ export default function Navbar() {
                 <NavLink
                   to="/captain-register"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="px-4 py-3 bg-emerald-600 text-white rounded-lg font-semibold text-center"
+                  className="px-4 py-3 bg-emerald-500 text-white rounded-lg font-semibold text-center"
                 >
-                  🎖️ Captain Register
+                  Captain Register
                 </NavLink>
                 <NavLink
                   to="/captain-login"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="px-4 py-3 bg-teal-600 text-white rounded-lg font-semibold text-center"
+                  className="px-4 py-3 bg-emerald-500 text-white rounded-lg font-semibold text-center"
                 >
-                  🎖️ Captain Login
+                  Captain Login
                 </NavLink>
                 <NavLink
                   to="/admin-login"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="px-4 py-3 bg-blue-600 text-white rounded-lg font-semibold text-center"
+                  className="px-4 py-3 bg-slate-500 text-white rounded-lg font-semibold text-center"
                 >
-                  🔐 Admin Login
-                </NavLink>
-                <NavLink
-                  to="/live"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="px-4 py-3 bg-red-600 text-white rounded-lg font-semibold text-center flex items-center justify-center gap-2"
-                >
-                  <span className="inline-block h-2 w-2 rounded-full bg-white animate-pulse" />
-                  Live Score
+                  Admin Login
                 </NavLink>
               </div>
             )}

@@ -76,25 +76,25 @@ export default function ManageMatches({ onUpdateScore, refreshKey }: ManageMatch
   const sports = ["All", ...new Set(matches.map((m) => m.sport).filter(Boolean))];
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
-      <div className="border-b px-4 sm:px-6 py-3 sm:py-4">
-        <h2 className="text-lg sm:text-xl font-extrabold text-slate-900">Manage Matches</h2>
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="border-b border-slate-200 px-4 sm:px-6 py-4">
+        <h2 className="text-lg sm:text-xl font-semibold text-slate-800">Manage Matches</h2>
       </div>
 
       {/* Filter Bar */}
-      <div className="border-b px-3 sm:px-6 py-3 sm:py-4 bg-slate-50 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-4">
+      <div className="border-b border-slate-200 px-3 sm:px-6 py-4 bg-slate-50 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-4">
         <input
           type="text"
           placeholder="Search teams or venue..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="px-3 sm:px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:min-w-[200px] sm:w-auto"
+          className="px-3 sm:px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent w-full sm:min-w-[200px] sm:w-auto bg-white"
         />
         <div className="flex gap-2">
           <select
             value={selectedSport}
             onChange={(e) => setSelectedSport(e.target.value)}
-            className="flex-1 sm:flex-none px-3 sm:px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none"
+            className="flex-1 sm:flex-none px-3 sm:px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none bg-white"
           >
             {sports.map((sport) => (
               <option key={sport} value={sport}>
@@ -105,7 +105,7 @@ export default function ManageMatches({ onUpdateScore, refreshKey }: ManageMatch
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="flex-1 sm:flex-none px-3 sm:px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none"
+            className="flex-1 sm:flex-none px-3 sm:px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none bg-white"
           >
             <option value="All">All Status</option>
             <option value="scheduled">Scheduled</option>
@@ -148,15 +148,15 @@ export default function ManageMatches({ onUpdateScore, refreshKey }: ManageMatch
             <div className="flex gap-2">
               <button 
                 onClick={() => onUpdateScore?.(match)}
-                className="flex-1 text-blue-600 hover:text-blue-700 font-semibold px-2 py-1.5 bg-blue-50 rounded text-xs"
+                className="flex-1 text-slate-600 hover:text-slate-700 font-medium px-2 py-1.5 bg-slate-100 hover:bg-slate-200 rounded text-xs transition-colors"
               >
-                ✏️ Edit
+                Edit
               </button>
               <button
                 onClick={() => handleDelete(match._id)}
-                className="text-red-600 hover:text-red-700 font-semibold px-3 py-1.5 bg-red-50 rounded text-xs"
+                className="text-red-600 hover:text-red-700 font-medium px-3 py-1.5 bg-red-50 hover:bg-red-100 rounded text-xs transition-colors"
               >
-                🗑️
+                Delete
               </button>
             </div>
           </div>
@@ -166,14 +166,14 @@ export default function ManageMatches({ onUpdateScore, refreshKey }: ManageMatch
       {/* Desktop Table */}
       <div className="hidden sm:block overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-blue-900 text-white">
+          <thead className="bg-slate-100 border-b border-slate-200">
             <tr>
-              <th className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-semibold">Date</th>
-              <th className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-semibold">Sport</th>
-              <th className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-semibold">Match</th>
-              <th className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-semibold">Score</th>
-              <th className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-semibold">Status</th>
-              <th className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-semibold">Actions</th>
+              <th className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-semibold text-slate-700">Date</th>
+              <th className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-semibold text-slate-700">Sport</th>
+              <th className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-semibold text-slate-700">Match</th>
+              <th className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-semibold text-slate-700">Score</th>
+              <th className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-semibold text-slate-700">Status</th>
+              <th className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-semibold text-slate-700">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y">
@@ -215,17 +215,17 @@ export default function ManageMatches({ onUpdateScore, refreshKey }: ManageMatch
                 <td className="px-4 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm flex items-center gap-2">
                   <button 
                     onClick={() => onUpdateScore?.(match)}
-                    className="text-blue-600 hover:text-blue-700 font-semibold px-2 py-1 bg-blue-50 rounded text-xs"
+                    className="text-slate-600 hover:text-slate-700 font-medium px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded text-xs transition-colors"
                     title="Update Score"
                   >
-                    ✏️ Edit
+                    Edit
                   </button>
                   <button
                     onClick={() => handleDelete(match._id)}
-                    className="text-red-600 hover:text-red-700 font-semibold px-2 py-1 bg-red-50 rounded text-xs"
+                    className="text-red-600 hover:text-red-700 font-medium px-3 py-1.5 bg-red-50 hover:bg-red-100 rounded text-xs transition-colors"
                     title="Delete Match"
                   >
-                    🗑️
+                    Delete
                   </button>
                 </td>
               </tr>

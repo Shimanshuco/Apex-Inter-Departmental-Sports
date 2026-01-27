@@ -101,13 +101,13 @@ export default function AdminProfile() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">My Profile</h2>
+        <h2 className="text-xl font-semibold text-slate-800">My Profile</h2>
         {!isEditing && (
           <button
             onClick={() => setIsEditing(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            className="px-4 py-2.5 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-all font-medium text-sm shadow-sm"
           >
             Edit Profile
           </button>
@@ -155,7 +155,7 @@ export default function AdminProfile() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-700 mb-2">
                 First Name
               </label>
               <input
@@ -163,11 +163,11 @@ export default function AdminProfile() {
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-700 mb-2">
                 Last Name
               </label>
               <input
@@ -175,25 +175,25 @@ export default function AdminProfile() {
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-700 mb-2">
               Email
             </label>
             <input
               type="email"
               value={admin?.email}
               disabled
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600 cursor-not-allowed"
+              className="w-full px-3 py-2.5 border border-slate-200 rounded-lg bg-slate-50 text-slate-600 cursor-not-allowed"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-700 mb-2">
               Phone
             </label>
             <input
@@ -202,12 +202,12 @@ export default function AdminProfile() {
               value={formData.phone}
               onChange={handleChange}
               placeholder="+1 (555) 000-0000"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-700 mb-2">
               Bio
             </label>
             <textarea
@@ -216,7 +216,7 @@ export default function AdminProfile() {
               onChange={handleChange}
               placeholder="Tell us about yourself..."
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent resize-none"
             />
           </div>
 
@@ -224,14 +224,14 @@ export default function AdminProfile() {
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400"
+              className="px-5 py-2.5 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-all disabled:bg-slate-300 font-medium"
             >
               {loading ? "Saving..." : "Save Changes"}
             </button>
             <button
               type="button"
               onClick={() => setIsEditing(false)}
-              className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition"
+              className="px-5 py-2.5 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-all font-medium"
             >
               Cancel
             </button>
@@ -240,7 +240,7 @@ export default function AdminProfile() {
       ) : (
         <div className="space-y-4">
           <div className="flex flex-col items-center mb-6">
-            <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-200 mb-4 flex items-center justify-center">
+            <div className="w-32 h-32 rounded-full overflow-hidden bg-slate-100 mb-4 flex items-center justify-center border-4 border-slate-200">
               {imagePreview ? (
                 <img
                   src={imagePreview}
@@ -248,49 +248,49 @@ export default function AdminProfile() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="text-gray-400 text-center text-sm">No Image</div>
+                <div className="text-slate-400 text-center text-sm">No Image</div>
               )}
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">
+            <label className="block text-sm font-medium text-slate-500 mb-1">
               Name
             </label>
-            <p className="text-lg text-gray-800">
+            <p className="text-lg text-slate-800">
               {formData.firstName} {formData.lastName}
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">
+            <label className="block text-sm font-medium text-slate-500 mb-1">
               Username
             </label>
-            <p className="text-lg text-gray-800">{admin?.username}</p>
+            <p className="text-lg text-slate-800">{admin?.username}</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">
+            <label className="block text-sm font-medium text-slate-500 mb-1">
               Email
             </label>
-            <p className="text-lg text-gray-800">{admin?.email}</p>
+            <p className="text-lg text-slate-800">{admin?.email}</p>
           </div>
 
           {formData.phone && (
             <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">
+              <label className="block text-sm font-medium text-slate-500 mb-1">
                 Phone
               </label>
-              <p className="text-lg text-gray-800">{formData.phone}</p>
+              <p className="text-lg text-slate-800">{formData.phone}</p>
             </div>
           )}
 
           {formData.bio && (
             <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">
+              <label className="block text-sm font-medium text-slate-500 mb-1">
                 Bio
               </label>
-              <p className="text-lg text-gray-800">{formData.bio}</p>
+              <p className="text-lg text-slate-800">{formData.bio}</p>
             </div>
           )}
         </div>

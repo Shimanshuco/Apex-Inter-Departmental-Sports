@@ -1,7 +1,23 @@
 // API configuration for flexible deployment
-const rawUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
-// Remove trailing slash if present
-const API_BASE_URL = rawUrl.endsWith('/') ? rawUrl.slice(0, -1) : rawUrl;
+// In production, set VITE_API_URL environment variable in Vercel
+// Example: VITE_API_URL=https://your-backend.vercel.app/api
+const getApiUrl = () => {
+  // First check for environment variable
+  if (import.meta.env.VITE_API_URL) {
+    const url = import.meta.env.VITE_API_URL;
+    return url.endsWith('/') ? url.slice(0, -1) : url;
+  }
+  
+  
+  if (import.meta.env.PROD) {
+    return "https://apex-inter-departmental-sports-server.vercel.app/api";
+  }
+  
+  // Development fallback
+  return "http://localhost:8000/api";
+};
+
+const API_BASE_URL = getApiUrl();
 
 export default API_BASE_URL;
 

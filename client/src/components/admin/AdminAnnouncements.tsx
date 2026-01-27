@@ -87,26 +87,23 @@ export default function AdminAnnouncements({ refreshKey }: AdminAnnouncementsPro
   };
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
-      <div className="border-b px-4 sm:px-6 py-3 sm:py-4">
-        <h2 className="text-lg sm:text-xl font-extrabold text-slate-900">Announcements</h2>
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="border-b border-slate-200 px-4 sm:px-6 py-4">
+        <h2 className="text-lg sm:text-xl font-semibold text-slate-800">Announcements</h2>
       </div>
 
-      <div className="divide-y max-h-80 sm:max-h-96 overflow-y-auto">
+      <div className="divide-y divide-slate-100 max-h-80 sm:max-h-96 overflow-y-auto">
         {announcements.length > 0 ? (
           announcements.map((announcement) => (
             <div
               key={announcement._id}
-              className="px-4 sm:px-6 py-3 sm:py-4 hover:bg-slate-50 transition-colors"
+              className="px-4 sm:px-6 py-4 hover:bg-slate-50 transition-colors"
             >
               <div className="flex items-start gap-2 sm:gap-3">
-                <span className="text-xl sm:text-2xl hidden sm:inline">
-                  {getPriorityIcon(announcement.priority)}
-                </span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2 sm:gap-4">
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-extrabold text-slate-900 text-sm sm:text-base truncate">
+                      <h3 className="font-semibold text-slate-800 text-sm sm:text-base truncate">
                         {announcement.title}
                       </h3>
                       <p className="text-xs text-slate-500 mt-1 line-clamp-2">
@@ -115,7 +112,7 @@ export default function AdminAnnouncements({ refreshKey }: AdminAnnouncementsPro
                     </div>
                     <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
                       <span
-                        className={`inline-block px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs font-semibold whitespace-nowrap ${getPriorityColor(
+                        className={`inline-block px-2 sm:px-2.5 py-0.5 sm:py-1 rounded text-xs font-medium whitespace-nowrap ${getPriorityColor(
                           announcement.priority
                         )}`}
                       >
@@ -124,13 +121,15 @@ export default function AdminAnnouncements({ refreshKey }: AdminAnnouncementsPro
                       </span>
                       <button
                         onClick={() => handleDelete(announcement._id)}
-                        className="text-red-600 hover:text-red-700 font-semibold text-lg sm:text-xl"
+                        className="text-slate-400 hover:text-red-500 transition-colors p-1"
                       >
-                        ×
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
                       </button>
                     </div>
                   </div>
-                  <div className="text-xs text-slate-400 mt-1.5 sm:mt-2">
+                  <div className="text-xs text-slate-400 mt-2">
                     {new Date(announcement.date).toLocaleString()}
                   </div>
                 </div>
@@ -138,7 +137,7 @@ export default function AdminAnnouncements({ refreshKey }: AdminAnnouncementsPro
             </div>
           ))
         ) : (
-          <div className="px-4 sm:px-6 py-6 sm:py-8 text-center text-gray-500 text-sm">
+          <div className="px-4 sm:px-6 py-8 text-center text-slate-500 text-sm">
             No announcements yet
           </div>
         )}

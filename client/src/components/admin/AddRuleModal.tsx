@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAdmin } from "../../context/AdminContext";
 import { useNotification } from "../../context/NotificationContext";
 import { API_ENDPOINTS } from "../../config/api";
@@ -235,12 +235,12 @@ export default function AddRuleModal({
     if (!text) return <p className="text-slate-400 italic">No content to preview</p>;
     
     const lines = text.split('\n');
-    const elements: JSX.Element[] = [];
+    const elements: React.ReactNode[] = [];
     let currentList: { type: 'bullet' | 'numbered'; items: string[] } | null = null;
     let listKey = 0;
 
     const processInline = (line: string, key: number) => {
-      const parts: (string | JSX.Element)[] = [];
+      const parts: React.ReactNode[] = [];
       let remaining = line;
       let partKey = 0;
 

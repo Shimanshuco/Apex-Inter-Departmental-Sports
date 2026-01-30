@@ -9,6 +9,8 @@ interface Captain {
   phone: string;
   department: string;
   bloodGroup: string;
+  gender: string;
+  year: string;
   status: string;
 }
 

@@ -138,9 +138,9 @@ export const getAllCaptains = async (req: AuthRequest, res: Response) => {
 // Create captain (admin adding manually)
 export const createCaptain = async (req: AuthRequest, res: Response) => {
   try {
-    const { name, email, rNumber, phone, department, bloodGroup, password } = req.body;
+    const { name, email, rNumber, phone, department, bloodGroup, gender, year, password } = req.body;
 
-    if (!name || !email || !rNumber || !phone || !department || !bloodGroup || !password) {
+    if (!name || !email || !rNumber || !phone || !department || !bloodGroup || !gender || !year || !password) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
@@ -171,6 +171,8 @@ export const createCaptain = async (req: AuthRequest, res: Response) => {
       phone,
       department,
       bloodGroup,
+      gender,
+      year,
       password: hashedPassword,
       uniqueId,
       status: "approved", // Admin-created captains are auto-approved
@@ -187,6 +189,8 @@ export const createCaptain = async (req: AuthRequest, res: Response) => {
         phone: captain.phone,
         department: captain.department,
         bloodGroup: captain.bloodGroup,
+        gender: captain.gender,
+        year: captain.year,
         status: captain.status,
       },
     });

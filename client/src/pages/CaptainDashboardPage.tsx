@@ -22,6 +22,9 @@ const SPORTS_LIST = [
   "Athletics",
 ];
 
+const GENDERS = ["Male", "Female", "Other"];
+const YEARS = ["1st Year", "2nd Year", "3rd Year", "4th Year", "5th Year", "PG 1st Year", "PG 2nd Year", "PhD"];
+
 interface DepartmentPlayer {
   _id: string;
   name: string;
@@ -30,6 +33,8 @@ interface DepartmentPlayer {
   phone: string;
   email: string;
   sport: string;
+  gender: string;
+  year: string;
   status: string;
   department: string;
   createdAt: string;
@@ -63,6 +68,8 @@ export default function CaptainDashboardPage() {
     phone: "",
     email: "",
     sport: "",
+    gender: "",
+    year: "",
   });
   const [addPlayerLoading, setAddPlayerLoading] = useState(false);
   const [addPlayerError, setAddPlayerError] = useState("");
@@ -201,6 +208,8 @@ export default function CaptainDashboardPage() {
       phone: "",
       email: "",
       sport: "",
+      gender: "",
+      year: "",
     });
     setAddPlayerError("");
     setAddPlayerSuccess("");
@@ -460,7 +469,7 @@ export default function CaptainDashboardPage() {
             </div>
             
             <div className="border-t border-slate-100 p-4">
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
                   <p className="text-xs font-medium text-slate-500 mb-0.5">Full Name</p>
                   <p className="text-sm font-medium text-slate-800">{captain.name}</p>
@@ -476,6 +485,14 @@ export default function CaptainDashboardPage() {
                 <div>
                   <p className="text-xs font-medium text-slate-500 mb-0.5">Phone</p>
                   <p className="text-sm text-slate-700">{captain.phone}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-slate-500 mb-0.5">Gender</p>
+                  <p className="text-sm text-slate-700">{captain.gender || "—"}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-slate-500 mb-0.5">Year</p>
+                  <p className="text-sm text-slate-700">{captain.year || "—"}</p>
                 </div>
               </div>
             </div>
@@ -523,7 +540,7 @@ export default function CaptainDashboardPage() {
                     <tr className="bg-slate-50 border-b border-slate-100">
                       <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Player</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">R-Number</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Player ID</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Gender / Year</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Contact</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Sport</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Status</th>
@@ -537,8 +554,14 @@ export default function CaptainDashboardPage() {
                           <div className="font-medium text-slate-800 text-sm">{player.name}</div>
                           <div className="text-xs text-slate-500">{player.email}</div>
                         </td>
-                        <td className="px-4 py-3 text-sm font-mono text-slate-600">{player.rNumber}</td>
-                        <td className="px-4 py-3 text-sm font-mono font-semibold text-slate-700">{player.uniqueId}</td>
+                        <td className="px-4 py-3">
+                          <div className="text-sm font-mono text-slate-600">{player.rNumber}</div>
+                          <div className="text-xs font-mono text-slate-400">{player.uniqueId}</div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="text-sm text-slate-600">{player.gender || "—"}</div>
+                          <div className="text-xs text-slate-400">{player.year || "—"}</div>
+                        </td>
                         <td className="px-4 py-3 text-sm text-slate-600">{player.phone}</td>
                         <td className="px-4 py-3">
                           <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-medium">{player.sport}</span>
@@ -727,7 +750,7 @@ export default function CaptainDashboardPage() {
       {/* Add Player Modal */}
       {showAddPlayer && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div className="p-5 border-b border-slate-100">
               <div className="flex justify-between items-center">
                 <h2 className="text-lg font-semibold text-slate-800">Add New Player</h2>
@@ -756,58 +779,97 @@ export default function CaptainDashboardPage() {
               )}
 
               <form onSubmit={handleAddPlayerSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Player Name *</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={addPlayerForm.name}
-                    onChange={handleAddPlayerChange}
-                    required
-                    placeholder="Enter player's full name"
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-sm"
-                  />
+                {/* Row 1: Name and R-Number */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Player Name *</label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={addPlayerForm.name}
+                      onChange={handleAddPlayerChange}
+                      required
+                      placeholder="Full name"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">R-Number *</label>
+                    <input
+                      type="text"
+                      name="rNumber"
+                      value={addPlayerForm.rNumber}
+                      onChange={handleAddPlayerChange}
+                      required
+                      placeholder="e.g., R2021001"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-sm"
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Player R-Number *</label>
-                  <input
-                    type="text"
-                    name="rNumber"
-                    value={addPlayerForm.rNumber}
-                    onChange={handleAddPlayerChange}
-                    required
-                    placeholder="e.g., R2021001"
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-sm"
-                  />
+                {/* Row 2: Phone and Email */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Phone *</label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={addPlayerForm.phone}
+                      onChange={handleAddPlayerChange}
+                      required
+                      placeholder="Phone number"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Email *</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={addPlayerForm.email}
+                      onChange={handleAddPlayerChange}
+                      required
+                      placeholder="player@email.com"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-sm"
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Contact Number *</label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={addPlayerForm.phone}
-                    onChange={handleAddPlayerChange}
-                    required
-                    placeholder="Enter phone number"
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-sm"
-                  />
+                {/* Row 3: Gender and Year */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Gender *</label>
+                    <select
+                      name="gender"
+                      value={addPlayerForm.gender}
+                      onChange={handleAddPlayerChange}
+                      required
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-sm"
+                    >
+                      <option value="">Select Gender</option>
+                      {GENDERS.map((g) => (
+                        <option key={g} value={g}>{g}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Year *</label>
+                    <select
+                      name="year"
+                      value={addPlayerForm.year}
+                      onChange={handleAddPlayerChange}
+                      required
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-sm"
+                    >
+                      <option value="">Select Year</option>
+                      {YEARS.map((y) => (
+                        <option key={y} value={y}>{y}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Player Email *</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={addPlayerForm.email}
-                    onChange={handleAddPlayerChange}
-                    required
-                    placeholder="player@email.com"
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-sm"
-                  />
-                </div>
-
+                {/* Row 4: Sport */}
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Sport *</label>
                   <select

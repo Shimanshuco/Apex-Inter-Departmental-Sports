@@ -13,6 +13,8 @@ interface DepartmentPlayer {
   phone: string;
   department: string;
   sport: string;
+  gender: string;
+  year: string;
   captain: {
     _id: string;
     name: string;
@@ -36,7 +38,8 @@ const SPORTS_LIST = [
   "Tennis",
   "Hockey",
   "Kabaddi",
-  "Kho-Kho",
+  "Kho Kho",
+  "Tug of War",
   "Athletics",
   "Swimming",
   "Chess",
@@ -44,6 +47,9 @@ const SPORTS_LIST = [
   "Handball",
   "Throwball",
 ];
+
+const GENDERS = ["Male", "Female", "Other"];
+const YEARS = ["1st Year", "2nd Year", "3rd Year", "4th Year", "5th Year", "PG 1st Year", "PG 2nd Year", "PhD"];
 
 export default function ManageDepartmentPlayers({
   refreshKey,

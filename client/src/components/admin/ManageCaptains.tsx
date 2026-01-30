@@ -13,6 +13,8 @@ interface Captain {
   phone: string;
   department: string;
   bloodGroup: string;
+  gender: string;
+  year: string;
   status: string;
   createdAt: string;
 }
@@ -49,6 +51,8 @@ export default function ManageCaptains({ refreshKey }: ManageCaptainsProps) {
     phone: "",
     department: "",
     bloodGroup: "",
+    gender: "",
+    year: "",
     password: "",
   });
   const [addLoading, setAddLoading] = useState(false);
@@ -78,6 +82,8 @@ export default function ManageCaptains({ refreshKey }: ManageCaptainsProps) {
   ];
 
   const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+  const GENDERS = ["Male", "Female", "Other"];
+  const YEARS = ["1st Year", "2nd Year", "3rd Year", "4th Year", "5th Year", "PG 1st Year", "PG 2nd Year", "PhD"];
 
   useEffect(() => {
     fetchCaptains();
@@ -187,6 +193,8 @@ export default function ManageCaptains({ refreshKey }: ManageCaptainsProps) {
       phone: "",
       department: "",
       bloodGroup: "",
+      gender: "",
+      year: "",
       password: "",
     });
     setAddError("");
@@ -709,6 +717,44 @@ export default function ManageCaptains({ refreshKey }: ManageCaptainsProps) {
                       <option value="">Select Blood Group</option>
                       {BLOOD_GROUPS.map((bg) => (
                         <option key={bg} value={bg}>{bg}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Gender *
+                    </label>
+                    <select
+                      name="gender"
+                      value={addFormData.gender}
+                      onChange={handleAddChange}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    >
+                      <option value="">Select Gender</option>
+                      {GENDERS.map((g) => (
+                        <option key={g} value={g}>{g}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Year *
+                    </label>
+                    <select
+                      name="year"
+                      value={addFormData.year}
+                      onChange={handleAddChange}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    >
+                      <option value="">Select Year</option>
+                      {YEARS.map((y) => (
+                        <option key={y} value={y}>{y}</option>
                       ))}
                     </select>
                   </div>

@@ -24,6 +24,8 @@ const DEPARTMENTS = [
 ];
 
 const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+const GENDERS = ["Male", "Female", "Other"];
+const YEARS = ["1st Year", "2nd Year", "3rd Year", "4th Year", "5th Year", "PG 1st Year", "PG 2nd Year", "PhD"];
 
 const captainSchema = new mongoose.Schema(
   {
@@ -64,6 +66,16 @@ const captainSchema = new mongoose.Schema(
       enum: BLOOD_GROUPS,
       required: true,
     },
+    gender: {
+      type: String,
+      enum: GENDERS,
+      required: true,
+    },
+    year: {
+      type: String,
+      enum: YEARS,
+      required: true,
+    },
     status: {
       type: String,
       enum: ["active", "inactive", "pending", "approved", "rejected"],
@@ -78,4 +90,4 @@ const captainSchema = new mongoose.Schema(
 );
 
 export const Captain = mongoose.model("Captain", captainSchema);
-export { DEPARTMENTS, BLOOD_GROUPS };
+export { DEPARTMENTS, BLOOD_GROUPS, GENDERS, YEARS };

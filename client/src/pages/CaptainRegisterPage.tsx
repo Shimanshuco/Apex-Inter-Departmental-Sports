@@ -26,6 +26,8 @@ const DEPARTMENTS = [
 ];
 
 const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+const GENDERS = ["Male", "Female", "Other"];
+const YEARS = ["1st Year", "2nd Year", "3rd Year", "4th Year", "5th Year", "PG 1st Year", "PG 2nd Year", "PhD"];
 
 export default function CaptainRegisterPage() {
   const navigate = useNavigate();
@@ -38,6 +40,8 @@ export default function CaptainRegisterPage() {
     phone: "",
     department: "",
     bloodGroup: "",
+    gender: "",
+    year: "",
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState<{ uniqueId: string } | null>(null);
@@ -85,6 +89,8 @@ export default function CaptainRegisterPage() {
           phone: formData.phone,
           department: formData.department,
           bloodGroup: formData.bloodGroup,
+          gender: formData.gender,
+          year: formData.year,
         }),
       });
 
@@ -261,6 +267,48 @@ export default function CaptainRegisterPage() {
                 {BLOOD_GROUPS.map((bg) => (
                   <option key={bg} value={bg}>
                     {bg}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Gender */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Gender *
+              </label>
+              <select
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:bg-white transition-all"
+                required
+              >
+                <option value="">Select gender</option>
+                {GENDERS.map((g) => (
+                  <option key={g} value={g}>
+                    {g}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Year */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Current Year *
+              </label>
+              <select
+                name="year"
+                value={formData.year}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:bg-white transition-all"
+                required
+              >
+                <option value="">Select year</option>
+                {YEARS.map((y) => (
+                  <option key={y} value={y}>
+                    {y}
                   </option>
                 ))}
               </select>

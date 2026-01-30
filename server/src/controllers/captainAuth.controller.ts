@@ -20,9 +20,9 @@ interface CaptainRequest {
 // Register a new captain
 export const registerCaptain = async (req: CaptainRequest, res: Response) => {
   try {
-    const { name, email, password, rNumber, phone, department, bloodGroup } = req.body;
+    const { name, email, password, rNumber, phone, department, bloodGroup, gender, year } = req.body;
 
-    if (!name || !email || !password || !rNumber || !phone || !department || !bloodGroup) {
+    if (!name || !email || !password || !rNumber || !phone || !department || !bloodGroup || !gender || !year) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
@@ -55,6 +55,8 @@ export const registerCaptain = async (req: CaptainRequest, res: Response) => {
       phone,
       department,
       bloodGroup,
+      gender,
+      year,
       status: "pending",
     });
 
@@ -131,6 +133,8 @@ export const loginCaptain = async (req: CaptainRequest, res: Response) => {
         phone: captain.phone,
         department: captain.department,
         bloodGroup: captain.bloodGroup,
+        gender: captain.gender,
+        year: captain.year,
         status: captain.status,
       },
     });
@@ -156,6 +160,8 @@ export const getCaptainProfile = async (req: CaptainRequest, res: Response) => {
         phone: captain.phone,
         department: captain.department,
         bloodGroup: captain.bloodGroup,
+        gender: captain.gender,
+        year: captain.year,
         status: captain.status,
       },
     });
@@ -195,6 +201,8 @@ export const updateCaptainProfile = async (req: CaptainRequest, res: Response) =
         phone: captain.phone,
         department: captain.department,
         bloodGroup: captain.bloodGroup,
+        gender: captain.gender,
+        year: captain.year,
         status: captain.status,
       },
     });
@@ -224,9 +232,9 @@ export const getDepartmentPlayers = async (req: CaptainRequest, res: Response) =
 // Add department player
 export const addDepartmentPlayer = async (req: CaptainRequest, res: Response) => {
   try {
-    const { name, rNumber, phone, email, sport } = req.body;
+    const { name, rNumber, phone, email, sport, gender, year } = req.body;
 
-    if (!name || !rNumber || !phone || !email || !sport) {
+    if (!name || !rNumber || !phone || !email || !sport || !gender || !year) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
@@ -264,6 +272,8 @@ export const addDepartmentPlayer = async (req: CaptainRequest, res: Response) =>
       phone,
       email,
       sport,
+      gender,
+      year,
       department: captain.department,
       captain: captain._id,
       status: "pending",

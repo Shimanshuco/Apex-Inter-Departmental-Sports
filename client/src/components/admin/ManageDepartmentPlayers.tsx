@@ -85,6 +85,8 @@ export default function ManageDepartmentPlayers({
     department: "",
     sport: "",
     captainId: "",
+    gender: "",
+    year: "",
   });
   const [addLoading, setAddLoading] = useState(false);
   const [addError, setAddError] = useState("");
@@ -236,6 +238,8 @@ export default function ManageDepartmentPlayers({
       department: "",
       sport: "",
       captainId: "",
+      gender: "",
+      year: "",
     });
     setAddError("");
     await fetchCaptains();
@@ -854,6 +858,44 @@ export default function ManageDepartmentPlayers({
                     ))}
                   </select>
                   <p className="text-xs text-slate-500 mt-1">Auto-filled based on selected captain</p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Gender *
+                    </label>
+                    <select
+                      name="gender"
+                      value={addFormData.gender}
+                      onChange={handleAddChange}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">Select Gender</option>
+                      {GENDERS.map((gender) => (
+                        <option key={gender} value={gender}>{gender}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Year *
+                    </label>
+                    <select
+                      name="year"
+                      value={addFormData.year}
+                      onChange={handleAddChange}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">Select Year</option>
+                      {YEARS.map((year) => (
+                        <option key={year} value={year}>{year}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm">

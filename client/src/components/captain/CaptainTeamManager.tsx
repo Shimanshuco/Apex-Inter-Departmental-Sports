@@ -17,6 +17,8 @@ const SPORTS_LIST = [
   "Athletics",
 ];
 
+const GENDERS = ["Boys", "Girls"];
+
 interface Player {
   _id: string;
   name: string;
@@ -32,6 +34,7 @@ interface Team {
   _id: string;
   name: string;
   sport: string;
+  gender: string;
   department: string;
   captain: {
     _id: string;
@@ -46,18 +49,24 @@ interface Team {
   createdAt: string;
 }
 
+interface DepartmentTeam {
+  sport: string;
+  gender: string;
+}
+
 export default function CaptainTeamManager() {
   const { token } = useCaptain();
   const { showNotification, showConfirm } = useNotification();
   const [teams, setTeams] = useState<Team[]>([]);
+  const [departmentTeams, setDepartmentTeams] = useState<DepartmentTeam[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   // Create team modal state
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [createForm, setCreateForm] = useState({ name: "", sport: "" });
+  const [createForm, setCreateForm] = useState({ name: "", sport: "", gender: "" });
   const [createLoading, setCreateLoading] = useState(false);
-  const [createError, setCreateError] = useState("");
+  const [createError, setCreateError] = useState("");;
 
   // Edit team modal state
   const [editingTeam, setEditingTeam] = useState<Team | null>(null);
@@ -92,6 +101,7 @@ export default function CaptainTeamManager() {
       if (response.ok) {
         const data = await response.json();
         setTeams(data.teams || []);
+        setDepartmentTeams(data.departmentTeams || []);
       } else {
         const data = await response.json();
         setError(data.error || "Failed to fetch teams");
@@ -103,12 +113,12 @@ export default function CaptainTeamManager() {
     }
   };
 
-  const fetchAvailablePlayers = async (sport: string) => {
+  const fetchAvailablePlayers = async (sport: string, teamGender: string) => {
     if (!token) return;
 
     try {
       const response = await fetch(
-        `${API_ENDPOINTS.CAPTAIN_TEAMS_AVAILABLE_PLAYERS}?sport=${encodeURIComponent(sport)}`,
+        `${API_ENDPOINTS.CAPTAIN_TEAMS_AVAILABLE_PLAYERS}?sport=${encodeURIComponent(sport)}&teamGender=${encodeURIComponent(teamGender)}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -141,7 +151,7 @@ export default function CaptainTeamManager() {
 
       if (response.ok) {
         setShowCreateModal(false);
-        setCreateForm({ name: "", sport: "" });
+        setCreateForm({ name: "", sport: "", gender: "" });
         fetchTeams();
       } else {
         setCreateError(data.error || "Failed to create team");
@@ -227,7 +237,7 @@ export default function CaptainTeamManager() {
       if (response.ok) {
         setManagingTeam(data.team);
         setSelectedPlayers([]);
-        fetchAvailablePlayers(managingTeam.sport);
+        fetchAvailablePlayers(managingTeam.sport, managingTeam.gender);
         fetchTeams();
       } else {
         setManageError(data.error || "Failed to add players");
@@ -255,7 +265,7 @@ export default function CaptainTeamManager() {
 
       if (response.ok) {
         setManagingTeam(data.team);
-        fetchAvailablePlayers(managingTeam.sport);
+        fetchAvailablePlayers(managingTeam.sport, managingTeam.gender);
         fetchTeams();
         showNotification("Player removed from team", "success");
       } else {
@@ -270,7 +280,7 @@ export default function CaptainTeamManager() {
     setManagingTeam(team);
     setSelectedPlayers([]);
     setManageError("");
-    fetchAvailablePlayers(team.sport);
+    fetchAvailablePlayers(team.sport, team.gender);
   };
 
   const openEditModal = (team: Team) => {
@@ -279,10 +289,30 @@ export default function CaptainTeamManager() {
     setEditError("");
   };
 
-  // Get sports that don't have a team yet
-  const availableSports = SPORTS_LIST.filter(
-    (sport) => !teams.some((team) => team.sport === sport)
-  );
+  // Get sport+gender combinations that don't have a team yet in the entire department
+  const getAvailableSportGenderCombinations = () => {
+    const combinations: { sport: string; gender: string }[] = [];
+    SPORTS_LIST.forEach((sport) => {
+      GENDERS.forEach((gender) => {
+        // Check against all department teams, not just captain's teams
+        const hasTeam = departmentTeams.some((team) => team.sport === sport && team.gender === gender);
+        if (!hasTeam) {
+          combinations.push({ sport, gender });
+        }
+      });
+    });
+    return combinations;
+  };
+
+  const availableCombinations = getAvailableSportGenderCombinations();
+  const availableSports = [...new Set(availableCombinations.map((c) => c.sport))];
+
+  // Get available genders for a selected sport
+  const getAvailableGendersForSport = (sport: string) => {
+    return availableCombinations
+      .filter((c) => c.sport === sport)
+      .map((c) => c.gender);
+  };
 
   if (loading) {
     return (
@@ -302,12 +332,12 @@ export default function CaptainTeamManager() {
         <div>
           <h2 className="text-lg font-semibold text-slate-800">Team Management</h2>
           <p className="text-sm text-slate-500">
-            Manage your department teams (1 team per sport, max 15 players each)
+            Manage your department teams (1 Boys & 1 Girls team per sport, max 15 players each)
           </p>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          disabled={availableSports.length === 0}
+          disabled={availableCombinations.length === 0}
           className="px-3 py-1.5 bg-slate-600 text-white rounded-lg font-medium hover:bg-slate-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors text-sm flex items-center gap-1.5"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -345,7 +375,9 @@ export default function CaptainTeamManager() {
                 <div className="flex justify-between items-start mb-3">
                   <div>
                     <h3 className="font-semibold text-slate-800">{team.name}</h3>
-                    <p className="text-sm text-slate-500 font-medium">{team.sport}</p>
+                    <p className="text-sm text-slate-500 font-medium">
+                      {team.sport} <span className={`ml-1 px-1.5 py-0.5 text-xs rounded ${team.gender === 'Boys' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}`}>{team.gender}</span>
+                    </p>
                   </div>
                   <span
                     className={`px-2 py-0.5 text-xs rounded-full font-medium ${
@@ -447,7 +479,7 @@ export default function CaptainTeamManager() {
                 </label>
                 <select
                   value={createForm.sport}
-                  onChange={(e) => setCreateForm({ ...createForm, sport: e.target.value })}
+                  onChange={(e) => setCreateForm({ ...createForm, sport: e.target.value, gender: "" })}
                   required
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent text-sm"
                 >
@@ -465,12 +497,37 @@ export default function CaptainTeamManager() {
                 )}
               </div>
 
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Team Category
+                </label>
+                <select
+                  value={createForm.gender}
+                  onChange={(e) => setCreateForm({ ...createForm, gender: e.target.value })}
+                  required
+                  disabled={!createForm.sport}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent text-sm disabled:bg-slate-50 disabled:text-slate-400"
+                >
+                  <option value="">Select Category</option>
+                  {createForm.sport && getAvailableGendersForSport(createForm.sport).map((gender) => (
+                    <option key={gender} value={gender}>
+                      {gender}
+                    </option>
+                  ))}
+                </select>
+                {createForm.sport && getAvailableGendersForSport(createForm.sport).length === 0 && (
+                  <p className="text-xs text-amber-600 mt-1">
+                    All categories for this sport already have teams!
+                  </p>
+                )}
+              </div>
+
               <div className="flex gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => {
                     setShowCreateModal(false);
-                    setCreateForm({ name: "", sport: "" });
+                    setCreateForm({ name: "", sport: "", gender: "" });
                     setCreateError("");
                   }}
                   className="flex-1 px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 font-medium text-sm"
@@ -479,7 +536,7 @@ export default function CaptainTeamManager() {
                 </button>
                 <button
                   type="submit"
-                  disabled={createLoading || !createForm.name || !createForm.sport}
+                  disabled={createLoading || !createForm.name || !createForm.sport || !createForm.gender}
                   className="flex-1 px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 disabled:bg-slate-300 disabled:cursor-not-allowed font-medium text-sm transition-colors"
                 >
                   {createLoading ? "Creating..." : "Create Team"}
@@ -529,7 +586,19 @@ export default function CaptainTeamManager() {
                     disabled
                     className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 text-slate-500 text-sm"
                   />
-                  <p className="text-xs text-slate-500 mt-1">Sport cannot be changed</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    Category
+                  </label>
+                  <input
+                    type="text"
+                    value={editingTeam.gender}
+                    disabled
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 text-slate-500 text-sm"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">Sport and category cannot be changed</p>
                 </div>
 
                 <div className="flex gap-3 pt-2">
@@ -564,7 +633,7 @@ export default function CaptainTeamManager() {
             <div className="px-5 py-4 border-b border-slate-100">
               <h3 className="text-lg font-semibold text-slate-800">Manage Players - {managingTeam.name}</h3>
               <p className="text-sm text-slate-500">
-                {managingTeam.sport} • {managingTeam.players.length}/{managingTeam.maxPlayers} players
+                {managingTeam.sport} <span className={`ml-1 px-1.5 py-0.5 text-xs rounded ${managingTeam.gender === 'Boys' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}`}>{managingTeam.gender}</span> • {managingTeam.players.length}/{managingTeam.maxPlayers} players
               </p>
             </div>
 
@@ -690,7 +759,9 @@ export default function CaptainTeamManager() {
           <div className="bg-white rounded-xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col shadow-xl">
             <div className="px-5 py-4 border-b border-slate-100">
               <h3 className="text-lg font-semibold text-slate-800">{viewingTeam.name}</h3>
-              <p className="text-sm text-slate-500">{viewingTeam.sport}</p>
+              <p className="text-sm text-slate-500">
+                {viewingTeam.sport} <span className={`ml-1 px-1.5 py-0.5 text-xs rounded ${viewingTeam.gender === 'Boys' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}`}>{viewingTeam.gender}</span>
+              </p>
             </div>
 
             <div className="flex-1 overflow-y-auto p-5">
@@ -699,6 +770,10 @@ export default function CaptainTeamManager() {
                   <div>
                     <p className="text-slate-500 text-xs font-medium mb-0.5">Department</p>
                     <p className="font-medium text-slate-800">{viewingTeam.department}</p>
+                  </div>
+                  <div>
+                    <p className="text-slate-500 text-xs font-medium mb-0.5">Category</p>
+                    <p className="font-medium text-slate-800">{viewingTeam.gender}</p>
                   </div>
                   <div>
                     <p className="text-slate-500 text-xs font-medium mb-0.5">Status</p>

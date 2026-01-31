@@ -39,7 +39,7 @@ export const getTeamById = async (req: Request, res: Response) => {
 export const updateTeam = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { name, playerIds, status } = req.body;
+    const { name, playerIds, status, gender } = req.body;
 
     const team = await Team.findById(id);
     if (!team) {
@@ -76,6 +76,25 @@ export const updateTeam = async (req: Request, res: Response) => {
 
     if (status && ["active", "inactive", "pending"].includes(status)) {
       team.status = status;
+    }
+
+    // Update gender if provided (admin only)
+    if (gender && ["Boys", "Girls"].includes(gender)) {
+      // Check if another team with same sport, department, and new gender already exists
+      if (gender !== team.gender) {
+        const existingTeam = await Team.findOne({
+          _id: { $ne: team._id },
+          sport: team.sport,
+          department: team.department,
+          gender: gender,
+        });
+        if (existingTeam) {
+          return res.status(400).json({
+            error: `A ${gender} team for ${team.sport} already exists in ${team.department}`,
+          });
+        }
+        team.gender = gender;
+      }
     }
 
     await team.save();

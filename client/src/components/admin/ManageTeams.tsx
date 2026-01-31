@@ -37,6 +37,7 @@ interface Team {
   _id: string;
   name: string;
   sport: string;
+  gender: string;
   department: string;
   captain: {
     _id: string;
@@ -72,7 +73,7 @@ export default function ManageTeams({ refreshKey }: ManageTeamsProps) {
 
   // Edit team modal state
   const [editingTeam, setEditingTeam] = useState<Team | null>(null);
-  const [editForm, setEditForm] = useState({ name: "", status: "" });
+  const [editForm, setEditForm] = useState({ name: "", status: "", gender: "" });
   const [editLoading, setEditLoading] = useState(false);
   const [editError, setEditError] = useState("");
 
@@ -182,7 +183,7 @@ export default function ManageTeams({ refreshKey }: ManageTeamsProps) {
 
   const openEditModal = (team: Team) => {
     setEditingTeam(team);
-    setEditForm({ name: team.name, status: team.status });
+    setEditForm({ name: team.name, status: team.status, gender: team.gender || "Boys" });
     setEditError("");
   };
 
@@ -283,7 +284,9 @@ export default function ManageTeams({ refreshKey }: ManageTeamsProps) {
                   <div className="flex justify-between items-start mb-2">
                     <div>
                       <h3 className="font-bold text-slate-900">{team.name}</h3>
-                      <p className="text-sm text-blue-600">{team.sport}</p>
+                      <p className="text-sm text-blue-600">
+                        {team.sport} <span className={`ml-1 px-1.5 py-0.5 text-xs rounded ${team.gender === 'Boys' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}`}>{team.gender}</span>
+                      </p>
                     </div>
                     <select
                       value={team.status}
@@ -342,6 +345,7 @@ export default function ManageTeams({ refreshKey }: ManageTeamsProps) {
                 <tr>
                   <th className="px-4 py-3 text-left text-sm font-semibold">Team</th>
                   <th className="px-4 py-3 text-left text-sm font-semibold">Sport</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">Category</th>
                   <th className="px-4 py-3 text-left text-sm font-semibold">Department</th>
                   <th className="px-4 py-3 text-left text-sm font-semibold">Captain</th>
                   <th className="px-4 py-3 text-left text-sm font-semibold">Players</th>
@@ -357,6 +361,11 @@ export default function ManageTeams({ refreshKey }: ManageTeamsProps) {
                     </td>
                     <td className="px-4 py-3 text-sm text-blue-600 font-medium">
                       {team.sport}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`px-2 py-1 text-xs rounded font-medium ${team.gender === 'Boys' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}`}>
+                        {team.gender}
+                      </span>
                     </td>
                     <td className="px-4 py-3 text-sm text-slate-700">{team.department}</td>
                     <td className="px-4 py-3">
@@ -455,13 +464,19 @@ export default function ManageTeams({ refreshKey }: ManageTeamsProps) {
           <div className="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
             <div className="px-6 py-4 border-b">
               <h3 className="text-lg font-bold">{viewingTeam.name}</h3>
-              <p className="text-sm text-blue-600">{viewingTeam.sport} • {viewingTeam.department}</p>
+              <p className="text-sm text-blue-600">
+                {viewingTeam.sport} <span className={`ml-1 px-1.5 py-0.5 text-xs rounded ${viewingTeam.gender === 'Boys' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}`}>{viewingTeam.gender}</span> • {viewingTeam.department}
+              </p>
             </div>
 
             <div className="flex-1 overflow-y-auto p-6">
               <div className="space-y-6">
                 {/* Team Info */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+                  <div>
+                    <p className="text-gray-500">Category</p>
+                    <p className="font-medium">{viewingTeam.gender}</p>
+                  </div>
                   <div>
                     <p className="text-gray-500">Status</p>
                     <p className={`font-medium capitalize ${
@@ -600,6 +615,20 @@ export default function ManageTeams({ refreshKey }: ManageTeamsProps) {
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
                   <option value="pending">Pending</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Category (Gender)
+                </label>
+                <select
+                  value={editForm.gender}
+                  onChange={(e) => setEditForm({ ...editForm, gender: e.target.value })}
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="Boys">Boys</option>
+                  <option value="Girls">Girls</option>
                 </select>
               </div>
 

@@ -291,10 +291,10 @@ export const getAllDepartmentPlayers = async (req: AuthRequest, res: Response) =
 // Create department player (admin adding manually)
 export const createDepartmentPlayer = async (req: AuthRequest, res: Response) => {
   try {
-    const { name, email, rNumber, phone, department, sport, captainId } = req.body;
+    const { name, email, rNumber, phone, department, sport, captainId, gender, year } = req.body;
 
-    if (!name || !email || !rNumber || !phone || !department || !sport || !captainId) {
-      return res.status(400).json({ error: "All fields are required" });
+    if (!name || !email || !rNumber || !phone || !department || !sport || !captainId || !gender || !year) {
+      return res.status(400).json({ error: "All fields are required (including gender and year)" });
     }
 
     // Verify captain exists
@@ -332,6 +332,8 @@ export const createDepartmentPlayer = async (req: AuthRequest, res: Response) =>
       phone,
       department,
       sport,
+      gender,
+      year,
       captain: captainId,
       uniqueId,
       status: "approved", // Admin-created players are auto-approved

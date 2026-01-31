@@ -25,12 +25,18 @@ export const getCaptainTeams = async (req: CaptainRequest, res: Response) => {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const teams = await Team.find({ captain: captainId })
+    // Fetch teams created by this captain
+    const myTeams = await Team.find({ captain: captainId })
       .populate("captain", "name email department uniqueId")
       .populate("players", "name rNumber uniqueId phone email sport status")
-      .sort({ sport: 1 });
+      .sort({ sport: 1, gender: 1 });
 
-    res.json({ teams });
+    // Also fetch all teams in the department (to know which sport+gender combos are taken)
+    const departmentTeams = await Team.find({ department })
+      .select("sport gender")
+      .lean();
+
+    res.json({ teams: myTeams, departmentTeams });
   } catch (error: any) {
     res.status(500).json({ error: error.message || "Failed to fetch teams" });
   }
@@ -70,17 +76,17 @@ export const createCaptainTeam = async (req: CaptainRequest, res: Response) => {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const { name, sport, playerIds } = req.body;
+    const { name, sport, gender, playerIds } = req.body;
 
-    if (!name || !sport) {
-      return res.status(400).json({ error: "Team name and sport are required" });
+    if (!name || !sport || !gender) {
+      return res.status(400).json({ error: "Team name, sport, and gender are required" });
     }
 
-    // Check if team already exists for this sport in this department
-    const existingTeam = await Team.findOne({ sport, department });
+    // Check if team already exists for this sport and gender in this department
+    const existingTeam = await Team.findOne({ sport, gender, department });
     if (existingTeam) {
       return res.status(400).json({ 
-        error: `A team for ${sport} already exists in your department` 
+        error: `A ${gender} team for ${sport} already exists in your department` 
       });
     }
 
@@ -112,6 +118,7 @@ export const createCaptainTeam = async (req: CaptainRequest, res: Response) => {
     const team = await Team.create({
       name,
       sport,
+      gender,
       department,
       captain: captainId,
       players: validPlayerIds,
@@ -128,7 +135,7 @@ export const createCaptainTeam = async (req: CaptainRequest, res: Response) => {
   } catch (error: any) {
     if (error.code === 11000) {
       return res.status(400).json({ 
-        error: "A team for this sport already exists in your department" 
+        error: "A team for this sport and gender already exists in your department" 
       });
     }
     res.status(500).json({ error: error.message || "Failed to create team" });
@@ -304,7 +311,8 @@ export const removePlayerFromTeam = async (req: CaptainRequest, res: Response) =
 export const getAvailablePlayers = async (req: CaptainRequest, res: Response) => {
   try {
     const captainId = req.captain?.captainId;
-    const { sport } = req.query;
+    const sport = req.query.sport as string;
+    const teamGender = req.query.teamGender as string;
 
     if (!captainId) {
       return res.status(401).json({ error: "Unauthorized" });
@@ -314,15 +322,29 @@ export const getAvailablePlayers = async (req: CaptainRequest, res: Response) =>
       return res.status(400).json({ error: "Sport is required" });
     }
 
-    // Get all approved players for this sport belonging to this captain
-    const allPlayers = await DepartmentPlayer.find({
+    // Build filter for players
+    const playerFilter: any = {
       captain: captainId,
       sport: sport,
       status: { $in: ["active", "approved"] },
-    });
+    };
 
-    // Get the team for this sport (if exists)
-    const team = await Team.findOne({ captain: captainId, sport: sport });
+    // Filter by gender: Boys team -> Male players, Girls team -> Female players
+    if (teamGender && teamGender === "Boys") {
+      playerFilter.gender = "Male";
+    } else if (teamGender && teamGender === "Girls") {
+      playerFilter.gender = "Female";
+    }
+
+    // Get all approved players for this sport belonging to this captain
+    const allPlayers = await DepartmentPlayer.find(playerFilter);
+
+    // Get the team for this sport and gender (if exists)
+    const teamFilter: any = { captain: captainId, sport: sport };
+    if (teamGender) {
+      teamFilter.gender = teamGender;
+    }
+    const team = await Team.findOne(teamFilter);
 
     // Filter out players already in the team
     let availablePlayers = allPlayers;

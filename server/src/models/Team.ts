@@ -20,6 +20,8 @@ const SPORTS_LIST = [
   "Throwball",
 ];
 
+const GENDERS = ["Boys", "Girls"];
+
 const teamSchema = new mongoose.Schema(
   {
     name: {
@@ -29,6 +31,11 @@ const teamSchema = new mongoose.Schema(
     sport: {
       type: String,
       enum: SPORTS_LIST,
+      required: true,
+    },
+    gender: {
+      type: String,
+      enum: GENDERS,
       required: true,
     },
     department: {
@@ -63,7 +70,7 @@ const teamSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Compound index to ensure one team per sport per department
-teamSchema.index({ sport: 1, department: 1 }, { unique: true });
+// Compound index to ensure one team per sport per gender per department
+teamSchema.index({ sport: 1, gender: 1, department: 1 }, { unique: true });
 
 export const Team = mongoose.model("Team", teamSchema);

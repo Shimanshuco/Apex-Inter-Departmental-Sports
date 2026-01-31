@@ -36,7 +36,7 @@ const teamSchema = new mongoose.Schema(
     gender: {
       type: String,
       enum: GENDERS,
-      required: true,
+      default: "Boys",
     },
     department: {
       type: String,

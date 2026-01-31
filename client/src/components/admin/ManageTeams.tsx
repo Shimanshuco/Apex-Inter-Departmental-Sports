@@ -285,7 +285,7 @@ export default function ManageTeams({ refreshKey }: ManageTeamsProps) {
                     <div>
                       <h3 className="font-bold text-slate-900">{team.name}</h3>
                       <p className="text-sm text-blue-600">
-                        {team.sport} <span className={`ml-1 px-1.5 py-0.5 text-xs rounded ${team.gender === 'Boys' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}`}>{team.gender}</span>
+                        {team.sport} {team.gender && <span className={`ml-1 px-1.5 py-0.5 text-xs rounded ${team.gender === 'Boys' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}`}>{team.gender}</span>}
                       </p>
                     </div>
                     <select
@@ -363,9 +363,13 @@ export default function ManageTeams({ refreshKey }: ManageTeamsProps) {
                       {team.sport}
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`px-2 py-1 text-xs rounded font-medium ${team.gender === 'Boys' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}`}>
-                        {team.gender}
-                      </span>
+                      {team.gender ? (
+                        <span className={`px-2 py-1 text-xs rounded font-medium ${team.gender === 'Boys' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}`}>
+                          {team.gender}
+                        </span>
+                      ) : (
+                        <span className="px-2 py-1 text-xs rounded font-medium bg-gray-100 text-gray-500">Not Set</span>
+                      )}
                     </td>
                     <td className="px-4 py-3 text-sm text-slate-700">{team.department}</td>
                     <td className="px-4 py-3">
@@ -465,7 +469,7 @@ export default function ManageTeams({ refreshKey }: ManageTeamsProps) {
             <div className="px-6 py-4 border-b">
               <h3 className="text-lg font-bold">{viewingTeam.name}</h3>
               <p className="text-sm text-blue-600">
-                {viewingTeam.sport} <span className={`ml-1 px-1.5 py-0.5 text-xs rounded ${viewingTeam.gender === 'Boys' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}`}>{viewingTeam.gender}</span> • {viewingTeam.department}
+                {viewingTeam.sport} {viewingTeam.gender && <span className={`ml-1 px-1.5 py-0.5 text-xs rounded ${viewingTeam.gender === 'Boys' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}`}>{viewingTeam.gender}</span>} • {viewingTeam.department}
               </p>
             </div>
 
@@ -475,7 +479,7 @@ export default function ManageTeams({ refreshKey }: ManageTeamsProps) {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
                   <div>
                     <p className="text-gray-500">Category</p>
-                    <p className="font-medium">{viewingTeam.gender}</p>
+                    <p className="font-medium">{viewingTeam.gender || 'Not Set'}</p>
                   </div>
                   <div>
                     <p className="text-gray-500">Status</p>

@@ -237,7 +237,7 @@ export default function CaptainTeamManager() {
       if (response.ok) {
         setManagingTeam(data.team);
         setSelectedPlayers([]);
-        fetchAvailablePlayers(managingTeam.sport, managingTeam.gender);
+        fetchAvailablePlayers(managingTeam.sport, managingTeam.gender || "");
         fetchTeams();
       } else {
         setManageError(data.error || "Failed to add players");
@@ -265,7 +265,7 @@ export default function CaptainTeamManager() {
 
       if (response.ok) {
         setManagingTeam(data.team);
-        fetchAvailablePlayers(managingTeam.sport, managingTeam.gender);
+        fetchAvailablePlayers(managingTeam.sport, managingTeam.gender || "");
         fetchTeams();
         showNotification("Player removed from team", "success");
       } else {
@@ -280,7 +280,7 @@ export default function CaptainTeamManager() {
     setManagingTeam(team);
     setSelectedPlayers([]);
     setManageError("");
-    fetchAvailablePlayers(team.sport, team.gender);
+    fetchAvailablePlayers(team.sport, team.gender || "");
   };
 
   const openEditModal = (team: Team) => {
@@ -376,7 +376,7 @@ export default function CaptainTeamManager() {
                   <div>
                     <h3 className="font-semibold text-slate-800">{team.name}</h3>
                     <p className="text-sm text-slate-500 font-medium">
-                      {team.sport} <span className={`ml-1 px-1.5 py-0.5 text-xs rounded ${team.gender === 'Boys' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}`}>{team.gender}</span>
+                      {team.sport} {team.gender && <span className={`ml-1 px-1.5 py-0.5 text-xs rounded ${team.gender === 'Boys' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}`}>{team.gender}</span>}
                     </p>
                   </div>
                   <span
@@ -633,7 +633,7 @@ export default function CaptainTeamManager() {
             <div className="px-5 py-4 border-b border-slate-100">
               <h3 className="text-lg font-semibold text-slate-800">Manage Players - {managingTeam.name}</h3>
               <p className="text-sm text-slate-500">
-                {managingTeam.sport} <span className={`ml-1 px-1.5 py-0.5 text-xs rounded ${managingTeam.gender === 'Boys' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}`}>{managingTeam.gender}</span> • {managingTeam.players.length}/{managingTeam.maxPlayers} players
+                {managingTeam.sport} {managingTeam.gender && <span className={`ml-1 px-1.5 py-0.5 text-xs rounded ${managingTeam.gender === 'Boys' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}`}>{managingTeam.gender}</span>} • {managingTeam.players.length}/{managingTeam.maxPlayers} players
               </p>
             </div>
 
@@ -760,7 +760,7 @@ export default function CaptainTeamManager() {
             <div className="px-5 py-4 border-b border-slate-100">
               <h3 className="text-lg font-semibold text-slate-800">{viewingTeam.name}</h3>
               <p className="text-sm text-slate-500">
-                {viewingTeam.sport} <span className={`ml-1 px-1.5 py-0.5 text-xs rounded ${viewingTeam.gender === 'Boys' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}`}>{viewingTeam.gender}</span>
+                {viewingTeam.sport} {viewingTeam.gender && <span className={`ml-1 px-1.5 py-0.5 text-xs rounded ${viewingTeam.gender === 'Boys' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}`}>{viewingTeam.gender}</span>}
               </p>
             </div>
 
@@ -773,7 +773,7 @@ export default function CaptainTeamManager() {
                   </div>
                   <div>
                     <p className="text-slate-500 text-xs font-medium mb-0.5">Category</p>
-                    <p className="font-medium text-slate-800">{viewingTeam.gender}</p>
+                    <p className="font-medium text-slate-800">{viewingTeam.gender || 'Not Set'}</p>
                   </div>
                   <div>
                     <p className="text-slate-500 text-xs font-medium mb-0.5">Status</p>

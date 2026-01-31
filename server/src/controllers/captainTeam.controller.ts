@@ -82,8 +82,19 @@ export const createCaptainTeam = async (req: CaptainRequest, res: Response) => {
       return res.status(400).json({ error: "Team name, sport, and gender are required" });
     }
 
+    // Validate gender value
+    if (!["Boys", "Girls"].includes(gender)) {
+      return res.status(400).json({ error: "Gender must be 'Boys' or 'Girls'" });
+    }
+
     // Check if team already exists for this sport and gender in this department
-    const existingTeam = await Team.findOne({ sport, gender, department });
+    // Be explicit about matching the exact gender value
+    const existingTeam = await Team.findOne({ 
+      sport: sport, 
+      gender: gender, 
+      department: department 
+    });
+    
     if (existingTeam) {
       return res.status(400).json({ 
         error: `A ${gender} team for ${sport} already exists in your department` 

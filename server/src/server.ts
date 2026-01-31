@@ -7,8 +7,8 @@ import { Team } from "./models/Team";
 
 const PORT = process.env.PORT || 5000;
 
-// Function to sync database indexes (handles migration from old schema)
-const syncIndexes = async () => {
+// Function to sync database indexes and migrate old data
+const syncIndexesAndMigrateData = async () => {
   try {
     // Get the collection
     const collection = Team.collection;
@@ -31,6 +31,30 @@ const syncIndexes = async () => {
       console.log("✅ Old index dropped successfully");
     }
     
+    // Migrate old teams without gender field - set them to "Boys" as default
+    const teamsWithoutGender = await Team.countDocuments({ 
+      $or: [
+        { gender: { $exists: false } },
+        { gender: null },
+        { gender: "" }
+      ]
+    });
+    
+    if (teamsWithoutGender > 0) {
+      console.log(`🔄 Migrating ${teamsWithoutGender} teams without gender field...`);
+      await Team.updateMany(
+        { 
+          $or: [
+            { gender: { $exists: false } },
+            { gender: null },
+            { gender: "" }
+          ]
+        },
+        { $set: { gender: "Boys" } }
+      );
+      console.log("✅ Teams migrated successfully");
+    }
+    
     // Sync indexes (this will create the new index if it doesn't exist)
     await Team.syncIndexes();
     console.log("✅ Team indexes synced");
@@ -41,8 +65,8 @@ const syncIndexes = async () => {
 };
 
 dbConnection().then(async () => {
-  // Sync indexes after DB connection
-  await syncIndexes();
+  // Sync indexes and migrate data after DB connection
+  await syncIndexesAndMigrateData();
   
   app.listen(PORT, () => {
     console.log(`✅ Server running at http://localhost:${PORT}`);

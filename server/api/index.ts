@@ -11,6 +11,7 @@ import announcementRoutes from "../src/routes/announcement.routes";
 import galleryRoutes from "../src/routes/gallery.routes";
 import scheduleRoutes from "../src/routes/schedule.routes";
 import ruleRoutes from "../src/routes/rule.routes";
+import { Team } from "../src/models/Team";
 
 const app = express();
 
@@ -33,9 +34,63 @@ app.use(express.json());
 
 // MongoDB connection cache
 let cachedDb: typeof mongoose | null = null;
+let migrationDone = false;
+
+// Migration function to fix teams without gender
+async function migrateTeamsIfNeeded() {
+  if (migrationDone) return;
+  
+  try {
+    const collection = Team.collection;
+    
+    // Get existing indexes
+    const indexes = await collection.indexes();
+    
+    // Check if old index exists (sport + department without gender)
+    const oldIndex = indexes.find((idx: any) => 
+      idx.key && 
+      idx.key.sport === 1 && 
+      idx.key.department === 1 && 
+      !idx.key.gender &&
+      idx.unique === true
+    );
+    
+    if (oldIndex) {
+      console.log("🔄 Dropping old team index (sport + department)...");
+      await collection.dropIndex(oldIndex.name);
+      console.log("✅ Old index dropped successfully");
+    }
+    
+    // Migrate old teams without gender field - set them to "Boys" as default
+    const result = await Team.updateMany(
+      { 
+        $or: [
+          { gender: { $exists: false } },
+          { gender: null },
+          { gender: "" }
+        ]
+      },
+      { $set: { gender: "Boys" } }
+    );
+    
+    if (result.modifiedCount > 0) {
+      console.log(`✅ Migrated ${result.modifiedCount} teams to have gender field`);
+    }
+    
+    // Sync indexes
+    await Team.syncIndexes();
+    
+    migrationDone = true;
+  } catch (error) {
+    console.error("⚠️ Migration error:", error);
+    // Don't fail, continue anyway
+  }
+}
 
 async function connectDB() {
   if (cachedDb && mongoose.connection.readyState === 1) {
+    // Still run migration check even if already connected
+    await migrateTeamsIfNeeded();
     return cachedDb;
   }
   const MONGO_URI = process.env.MONGO_URI || "";
@@ -43,6 +98,10 @@ async function connectDB() {
     throw new Error("MONGO_URI environment variable is not set");
   }
   cachedDb = await mongoose.connect(MONGO_URI);
+  
+  // Run migration after connecting
+  await migrateTeamsIfNeeded();
+  
   return cachedDb;
 }
 

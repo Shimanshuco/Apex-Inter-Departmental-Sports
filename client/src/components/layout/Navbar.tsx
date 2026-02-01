@@ -63,6 +63,14 @@ export default function Navbar() {
               Rules
             </NavLink>
 
+            <NavLink className={navClass} to="/results">
+              Results
+            </NavLink>
+
+            <NavLink className={navClass} to="/about">
+              Creators
+            </NavLink>
+
             {isAdminAuth && (
               <NavLink className={navClass} to="/admin">
                 Admin
@@ -104,6 +112,7 @@ export default function Navbar() {
               </div>
             ) : (
               <div className="hidden sm:flex items-center gap-2 sm:gap-3">
+                {/* Captain Registration temporarily disabled
                 <Button
                   to="/captain-register"
                   fullWidth={false}
@@ -112,6 +121,7 @@ export default function Navbar() {
                 >
                   Captain Register
                 </Button>
+                */}
 
                 <Button
                   to="/captain-login"
@@ -195,6 +205,22 @@ export default function Navbar() {
               Rules
             </NavLink>
 
+            <NavLink 
+              className={({ isActive }) => `px-4 py-3 rounded-lg font-medium ${isActive ? "bg-blue-50 text-blue-700" : "text-slate-700 hover:bg-slate-50"}`}
+              to="/results"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Results
+            </NavLink>
+
+            <NavLink 
+              className={({ isActive }) => `px-4 py-3 rounded-lg font-medium ${isActive ? "bg-blue-50 text-blue-700" : "text-slate-700 hover:bg-slate-50"}`}
+              to="/about"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Creators
+            </NavLink>
+
             {isAdminAuth && (
               <NavLink 
                 className={({ isActive }) => `px-4 py-3 rounded-lg font-medium ${isActive ? "bg-blue-50 text-blue-700" : "text-slate-700 hover:bg-slate-50"}`}
@@ -239,6 +265,7 @@ export default function Navbar() {
               </button>
             ) : (
               <div className="flex flex-col gap-2">
+                {/* Captain Registration temporarily disabled
                 <NavLink
                   to="/captain-register"
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -246,6 +273,7 @@ export default function Navbar() {
                 >
                   Captain Register
                 </NavLink>
+                */}
                 <NavLink
                   to="/captain-login"
                   onClick={() => setIsMobileMenuOpen(false)}

@@ -4,9 +4,11 @@ import HomePage from "../pages/HomePage";
 import ScoresPage from "../pages/ScoresPage";
 import SchedulePage from "../pages/SchedulePage";
 import GalleryPage from "../pages/GalleryPage";
+import AboutPage from "../pages/AboutPage";
+import ResultsPage from "../pages/ResultsPage";
 import AdminPage from "../pages/AdminPage";
 import AdminLoginPage from "../pages/AdminLoginPage";
-import CaptainRegisterPage from "../pages/CaptainRegisterPage";
+// import CaptainRegisterPage from "../pages/CaptainRegisterPage"; // Registration temporarily disabled
 import CaptainLoginPage from "../pages/CaptainLoginPage";
 import CaptainDashboardPage from "../pages/CaptainDashboardPage";
 import RulesPage from "../pages/RulesPage";
@@ -21,10 +23,12 @@ export default function AppRoutes() {
       <Route path="/scores" element={<ScoresPage />} />
       <Route path="/schedule" element={<SchedulePage />} />
       <Route path="/gallery" element={<GalleryPage />} />
+      <Route path="/results" element={<ResultsPage />} />
+      <Route path="/about" element={<AboutPage />} />
       <Route path="/rules" element={<RulesPage />} />
 
       {/* Captain Routes */}
-      <Route path="/captain-register" element={<CaptainRegisterPage />} />
+      {/* <Route path="/captain-register" element={<CaptainRegisterPage />} /> */} {/* Registration temporarily disabled */}
       <Route path="/captain-login" element={<CaptainLoginPage />} />
       <Route
         path="/captain-dashboard"

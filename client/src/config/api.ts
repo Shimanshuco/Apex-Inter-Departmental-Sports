@@ -125,5 +125,11 @@ export const API_ENDPOINTS = {
   RULES_UPDATE: (id: string) => `${API_BASE_URL}/rules/${id}`,
   RULES_DELETE: (id: string) => `${API_BASE_URL}/rules/${id}`,
 
+  // Results (Championship)
+  RESULT_GET: `${API_BASE_URL}/result`,
+  RESULT_CREATE: `${API_BASE_URL}/result`,
+  RESULT_UPDATE: `${API_BASE_URL}/result`,
+  RESULT_DELETE: `${API_BASE_URL}/result`,
+
   
 };

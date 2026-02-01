@@ -192,7 +192,7 @@ export default function CaptainLoginPage() {
               </button>
             </form>
 
-            {/* Divider */}
+            {/* Divider - Captain Registration temporarily disabled
             <div className="mt-6 pt-6 border-t border-slate-100">
               <p className="text-sm text-slate-600 text-center">
                 Don't have an account?{" "}
@@ -204,6 +204,7 @@ export default function CaptainLoginPage() {
                 </Link>
               </p>
             </div>
+            */}
 
             {/* Back to Home */}
             <div className="mt-4 text-center">

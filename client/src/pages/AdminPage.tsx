@@ -9,6 +9,7 @@ import ManageTeams from "../components/admin/ManageTeams";
 import ManageGallery from "../components/admin/ManageGallery";
 import ManageSchedules from "../components/admin/ManageSchedules";
 import ManageRules from "../components/admin/ManageRules";
+import ManageResults from "../components/admin/ManageResults";
 import CaptainApprovals from "../components/admin/CaptainApprovals";
 import AdminAnnouncements from "../components/admin/AdminAnnouncements";
 import AdminProfile from "../components/admin/AdminProfile";
@@ -263,6 +264,16 @@ export default function AdminPage() {
               Rules
             </button>
             <button
+              onClick={() => setCurrentView("results")}
+              className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg font-medium transition-all text-xs sm:text-sm whitespace-nowrap ${
+                currentView === "results"
+                  ? "bg-yellow-600 text-white shadow-md"
+                  : "bg-yellow-50 text-yellow-700 hover:bg-yellow-100"
+              }`}
+            >
+              Results
+            </button>
+            <button
               onClick={() => setCurrentView("profile")}
               className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg font-medium transition-all text-xs sm:text-sm whitespace-nowrap ${
                 currentView === "profile"
@@ -470,6 +481,12 @@ export default function AdminPage() {
                 setShowAddRule(true);
               }}
             />
+          </div>
+        )}
+
+        {currentView === "results" && (
+          <div className="px-4 sm:px-8 py-6 sm:py-8">
+            <ManageResults />
           </div>
         )}
 

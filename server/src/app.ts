@@ -9,6 +9,7 @@ import announcementRoutes from "./routes/announcement.routes";
 import galleryRoutes from "./routes/gallery.routes";
 import scheduleRoutes from "./routes/schedule.routes";
 import ruleRoutes from "./routes/rule.routes";
+import resultRoutes from "./routes/result.routes";
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use("/api/announcements", announcementRoutes);
 app.use("/api/gallery", galleryRoutes);
 app.use("/api/schedules", scheduleRoutes);
 app.use("/api/rules", ruleRoutes);
+app.use("/api/result", resultRoutes);
 
 
 

@@ -25,6 +25,12 @@ const getIcon = (iconName: string) => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       );
+    case "trophy":
+      return (
+        <svg className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 4h2a2 2 0 012 2v1a4 4 0 01-4 4m-8 0a4 4 0 01-4-4V6a2 2 0 012-2h2m4 10v4m-4 0h8m-4-4a4 4 0 004-4V4H8v6a4 4 0 004 4z" />
+        </svg>
+      );
     default:
       return <span className="text-4xl">{iconName}</span>;
   }

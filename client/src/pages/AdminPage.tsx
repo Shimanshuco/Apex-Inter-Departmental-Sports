@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import StatCard from "../components/admin/StatCard";
-import ManageMatches from "../components/admin/ManageMatches";
+import ManageScores from "../components/admin/ManageScores";
 import ManageCaptains from "../components/admin/ManageCaptains";
 import ManageDepartmentPlayers from "../components/admin/ManageDepartmentPlayers";
 import ManageTeams from "../components/admin/ManageTeams";
@@ -13,8 +13,6 @@ import ManageResults from "../components/admin/ManageResults";
 import CaptainApprovals from "../components/admin/CaptainApprovals";
 import AdminAnnouncements from "../components/admin/AdminAnnouncements";
 import AdminProfile from "../components/admin/AdminProfile";
-import AddMatchModal from "../components/admin/AddMatchModal";
-import UpdateScoreModal from "../components/admin/UpdateScoreModal";
 import AddAnnouncementModal from "../components/admin/AddAnnouncementModal";
 import AddScheduleModal from "../components/admin/AddScheduleModal";
 import AddRuleModal from "../components/admin/AddRuleModal";
@@ -22,105 +20,64 @@ import { useAdmin } from "../context/AdminContext";
 import { API_ENDPOINTS } from "../config/api";
 import axios from "axios";
 
-interface Match {
-  _id: string;
-  teamA: string;
-  teamB: string;
-  status: string;
-  scoreA?: number;
-  scoreB?: number;
-}
-
 export default function AdminPage() {
   const { admin, token } = useAdmin();
   const [stats, setStats] = useState({
     players: 0,
-    matches: 0,
+    scores: 0,
     pendingScores: 0,
   });
 
   const [currentView, setCurrentView] = useState("dashboard");
-  const [showAddMatch, setShowAddMatch] = useState(false);
-  const [showUpdateScore, setShowUpdateScore] = useState(false);
   const [showAddAnnouncement, setShowAddAnnouncement] = useState(false);
   const [showAddSchedule, setShowAddSchedule] = useState(false);
   const [showAddRule, setShowAddRule] = useState(false);
   const [editSchedule, setEditSchedule] = useState<any>(null);
   const [editRule, setEditRule] = useState<any>(null);
   const [refreshKey, setRefreshKey] = useState(0);
-  
-  // For UpdateScoreModal
-  const [selectedMatchId, setSelectedMatchId] = useState<string | null>(null);
-  const [selectedMatchDetails, setSelectedMatchDetails] = useState<any>(null);
-  const [matches, setMatches] = useState<Match[]>([]);
 
   useEffect(() => {
     fetchStats();
-    fetchMatches();
   }, [token]);
 
   const fetchStats = async () => {
     if (!token) return;
     try {
-      const [captainsRes, playersRes, matchesRes] = await Promise.all([
+      const [captainsRes, playersRes, scoresRes] = await Promise.all([
         axios.get(API_ENDPOINTS.ADMIN_CAPTAINS_LIST, {
           headers: { Authorization: `Bearer ${token}` },
         }),
         axios.get(API_ENDPOINTS.ADMIN_DEPT_PLAYERS_LIST, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get(API_ENDPOINTS.MATCHES_LIST, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
+        axios.get(API_ENDPOINTS.SCORES_LIST),
       ]);
 
       const captainsCount = captainsRes.data.captains?.length || 0;
       const playersCount = playersRes.data.players?.length || 0;
+      const scoresCount = scoresRes.data.scores?.length || 0;
+
+      // Calculate total possible scores (14 sports * 2 categories = 28)
+      const totalPossibleScores = 28;
+      const pendingScores = totalPossibleScores - scoresCount;
 
       setStats({
         players: captainsCount + playersCount,
-        matches: matchesRes.data.matches?.length || 0,
-        pendingScores: matchesRes.data.matches?.filter(
-          (m: any) => m.status === "scheduled"
-        ).length || 0,
+        scores: scoresCount,
+        pendingScores: pendingScores > 0 ? pendingScores : 0,
       });
     } catch (error) {
       console.error("Failed to fetch stats");
     }
   };
 
-  const fetchMatches = async () => {
-    if (!token) return;
-    try {
-      const response = await axios.get(API_ENDPOINTS.MATCHES_LIST, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setMatches(response.data.matches || []);
-    } catch (error) {
-      console.error("Failed to fetch matches");
-    }
-  };
-
-  const handleMatchAdded = () => {
+  const handleRefresh = () => {
     setRefreshKey((prev) => prev + 1);
     fetchStats();
-    fetchMatches();
   };
 
   const handleAnnouncementAdded = () => {
     setRefreshKey((prev) => prev + 1);
-  };
-
-  const openUpdateScore = (match: Match) => {
-    setSelectedMatchId(match._id);
-    setSelectedMatchDetails({
-      team1Name: match.teamA || "Team A",
-      team2Name: match.teamB || "Team B",
-      scoreA: match.scoreA,
-      scoreB: match.scoreB,
-      status: match.status,
-    });
-    setShowUpdateScore(true);
   };
 
   return (
@@ -174,14 +131,14 @@ export default function AdminPage() {
               Dashboard
             </button>
             <button
-              onClick={() => setCurrentView("matches")}
+              onClick={() => setCurrentView("scores")}
               className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg font-medium transition-all text-xs sm:text-sm whitespace-nowrap ${
-                currentView === "matches"
-                  ? "bg-slate-700 text-white shadow-md"
-                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                currentView === "scores"
+                  ? "bg-yellow-600 text-white shadow-md"
+                  : "bg-yellow-50 text-yellow-700 hover:bg-yellow-100"
               }`}
             >
-              Matches
+              Scores
             </button>
             <button
               onClick={() => setCurrentView("captains")}
@@ -267,11 +224,11 @@ export default function AdminPage() {
               onClick={() => setCurrentView("results")}
               className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg font-medium transition-all text-xs sm:text-sm whitespace-nowrap ${
                 currentView === "results"
-                  ? "bg-yellow-600 text-white shadow-md"
-                  : "bg-yellow-50 text-yellow-700 hover:bg-yellow-100"
+                  ? "bg-purple-600 text-white shadow-md"
+                  : "bg-purple-50 text-purple-700 hover:bg-purple-100"
               }`}
             >
-              Results
+              Championship
             </button>
             <button
               onClick={() => setCurrentView("profile")}
@@ -298,15 +255,15 @@ export default function AdminPage() {
                   color="bg-gradient-to-br from-slate-500 to-slate-600"
                 />
                 <StatCard
-                  icon="calendar"
-                  count={stats.matches.toString()}
-                  label="Total Matches"
-                  color="bg-gradient-to-br from-slate-600 to-slate-700"
+                  icon="trophy"
+                  count={stats.scores.toString()}
+                  label="Sports Scores"
+                  color="bg-gradient-to-br from-yellow-500 to-yellow-600"
                 />
                 <StatCard
                   icon="clock"
                   count={stats.pendingScores.toString()}
-                  label="Pending Score Updates"
+                  label="Pending Scores"
                   color="bg-gradient-to-br from-amber-500 to-amber-600"
                 />
               </div>
@@ -317,11 +274,11 @@ export default function AdminPage() {
               <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">Quick Actions</h3>
               <div className="flex flex-wrap gap-3 sm:gap-4">
                 <button
-                  onClick={() => setShowAddMatch(true)}
-                  className="px-4 sm:px-6 py-2.5 sm:py-3 bg-slate-600 text-white rounded-lg font-medium hover:bg-slate-700 flex items-center gap-2 transition-all shadow-sm hover:shadow text-xs sm:text-sm"
+                  onClick={() => setCurrentView("scores")}
+                  className="px-4 sm:px-6 py-2.5 sm:py-3 bg-yellow-600 text-white rounded-lg font-medium hover:bg-yellow-700 flex items-center gap-2 transition-all shadow-sm hover:shadow text-xs sm:text-sm"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-                  <span>Add Match</span>
+                  <span>Add Score</span>
                 </button>
                 <button
                   onClick={() => setCurrentView("captains")}
@@ -353,26 +310,16 @@ export default function AdminPage() {
             {/* Quick Overview Grid */}
             <div className="px-4 sm:px-8 py-4 sm:py-6 space-y-6 sm:space-y-8">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8">
-                <ManageMatches refreshKey={refreshKey} onUpdateScore={openUpdateScore} />
+                <ManageScores refreshKey={refreshKey} />
                 <AdminAnnouncements refreshKey={refreshKey} />
               </div>
             </div>
           </>
         )}
 
-        {currentView === "matches" && (
+        {currentView === "scores" && (
           <div className="px-4 sm:px-8 py-6 sm:py-8">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-6">
-              <h2 className="text-xl sm:text-2xl font-semibold text-slate-800">Manage Matches</h2>
-              <button
-                onClick={() => setShowAddMatch(true)}
-                className="px-4 sm:px-6 py-2.5 sm:py-3 bg-slate-600 text-white rounded-lg font-medium hover:bg-slate-700 transition-all shadow-sm text-sm w-full sm:w-auto flex items-center justify-center gap-2"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-                Add Match
-              </button>
-            </div>
-            <ManageMatches refreshKey={refreshKey} onUpdateScore={openUpdateScore} />
+            <ManageScores refreshKey={refreshKey} />
           </div>
         )}
 
@@ -498,39 +445,18 @@ export default function AdminPage() {
       </div>
 
       {/* Modals */}
-      <AddMatchModal
-        isOpen={showAddMatch}
-        onClose={() => setShowAddMatch(false)}
-        onMatchAdded={handleMatchAdded}
-      />
-      <UpdateScoreModal
-        isOpen={showUpdateScore}
-        onClose={() => {
-          setShowUpdateScore(false);
-          setSelectedMatchId(null);
-          setSelectedMatchDetails(null);
-        }}
-        matchId={selectedMatchId}
-        matchDetails={selectedMatchDetails}
-        onScoreUpdated={handleMatchAdded}
-      />
       <AddAnnouncementModal
         isOpen={showAddAnnouncement}
         onClose={() => setShowAddAnnouncement(false)}
         onAnnouncementAdded={handleAnnouncementAdded}
       />
-      {/* <AddTeamModal
-        isOpen={showAddTeam}
-        onClose={() => setShowAddTeam(false)}
-        onTeamAdded={handleMatchAdded}
-      /> */}
       <AddScheduleModal
         isOpen={showAddSchedule}
         onClose={() => {
           setShowAddSchedule(false);
           setEditSchedule(null);
         }}
-        onScheduleAdded={handleMatchAdded}
+        onScheduleAdded={handleRefresh}
         editSchedule={editSchedule}
       />
       <AddRuleModal
@@ -539,7 +465,7 @@ export default function AdminPage() {
           setShowAddRule(false);
           setEditRule(null);
         }}
-        onRuleAdded={handleMatchAdded}
+        onRuleAdded={handleRefresh}
         editRule={editRule}
       />
 

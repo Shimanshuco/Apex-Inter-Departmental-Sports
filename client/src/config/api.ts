@@ -131,5 +131,14 @@ export const API_ENDPOINTS = {
   RESULT_UPDATE: `${API_BASE_URL}/result`,
   RESULT_DELETE: `${API_BASE_URL}/result`,
 
+  // Scores (Individual Sports Results)
+  SCORES_LIST: `${API_BASE_URL}/scores`,
+  SCORES_BY_ID: (id: string) => `${API_BASE_URL}/scores/${id}`,
+  SCORES_CREATE: `${API_BASE_URL}/scores`,
+  SCORES_UPDATE: (id: string) => `${API_BASE_URL}/scores/${id}`,
+  SCORES_DELETE: (id: string) => `${API_BASE_URL}/scores/${id}`,
+  SCORES_BY_SPORT: (sport: string) => `${API_BASE_URL}/scores/sport/${sport}`,
+  SCORES_BY_CATEGORY: (category: string) => `${API_BASE_URL}/scores/category/${category}`,
+
   
 };

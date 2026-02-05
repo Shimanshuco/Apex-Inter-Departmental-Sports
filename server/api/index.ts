@@ -11,6 +11,7 @@ import announcementRoutes from "../src/routes/announcement.routes";
 import galleryRoutes from "../src/routes/gallery.routes";
 import scheduleRoutes from "../src/routes/schedule.routes";
 import ruleRoutes from "../src/routes/rule.routes";
+import resultRoutes from "../src/routes/result.routes";
 import { Team } from "../src/models/Team";
 
 const app = express();
@@ -134,6 +135,7 @@ app.use("/api/announcements", dbMiddleware, announcementRoutes);
 app.use("/api/gallery", dbMiddleware, galleryRoutes);
 app.use("/api/schedules", dbMiddleware, scheduleRoutes);
 app.use("/api/rules", dbMiddleware, ruleRoutes);
+app.use("/api/result", dbMiddleware, resultRoutes);
 
 // Global error handler - ensure JSON responses
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
